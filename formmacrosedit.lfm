@@ -1,0 +1,107 @@
+object FormEditMacros: TFormEditMacros
+  Left = 748
+  Height = 329
+  Top = 329
+  Width = 517
+  BorderIcons = [biSystemMenu]
+  BorderStyle = bsSingle
+  Caption = 'Edit macros'
+  ClientHeight = 329
+  ClientWidth = 517
+  Position = poMainFormCenter
+  LCLVersion = '4.8.0.0'
+  OnActivate = FormActivate
+  object Label1: TLabel
+    Left = 10
+    Height = 15
+    Top = 13
+    Width = 36
+    Caption = 'Name:'
+    Font.CharSet = RUSSIAN_CHARSET
+    Font.Pitch = fpVariable
+    Font.Quality = fqDraft
+    Font.Style = [fsBold]
+    ParentFont = False
+  end
+  object EdtNameCmd: TEdit
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    Left = 77
+    Height = 22
+    Top = 9
+    Width = 430
+    Anchors = [akTop, akLeft, akRight]
+    BorderSpacing.Right = 10
+    Font.CharSet = RUSSIAN_CHARSET
+    Font.Name = 'Consolas'
+    Font.Pitch = fpFixed
+    Font.Quality = fqDraft
+    Font.Style = [fsBold]
+    MaxLength = 254
+    ParentFont = False
+    TabOrder = 0
+    Text = 'EdtNameCmd'
+    OnChange = EdtNameCmdChange
+  end
+  object Label2: TLabel
+    Left = 10
+    Height = 15
+    Top = 63
+    Width = 51
+    Caption = 'Cmd line:'
+  end
+  object EdtLineCmd: TEdit
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    Left = 77
+    Height = 22
+    Top = 60
+    Width = 430
+    Anchors = [akTop, akLeft, akRight]
+    BorderSpacing.Right = 10
+    Font.CharSet = RUSSIAN_CHARSET
+    Font.Name = 'Consolas'
+    Font.Pitch = fpFixed
+    Font.Quality = fqDraft
+    MaxLength = 254
+    ParentFont = False
+    TabOrder = 1
+    Text = 'EdtLineCmd'
+    OnChange = EdtLineCmdChange
+  end
+  object MHelp: TMemo
+    AnchorSideLeft.Control = Owner
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    AnchorSideBottom.Control = Owner
+    AnchorSideBottom.Side = asrBottom
+    Left = 10
+    Height = 182
+    Top = 137
+    Width = 497
+    Anchors = [akTop, akLeft, akRight, akBottom]
+    BorderSpacing.Left = 10
+    BorderSpacing.Right = 10
+    BorderSpacing.Bottom = 10
+    Font.CharSet = RUSSIAN_CHARSET
+    Font.Height = -19
+    Font.Name = 'Consolas'
+    Font.Pitch = fpFixed
+    Font.Quality = fqDraft
+    Font.Style = [fsBold]
+    Lines.Strings = (
+      'MHelp'
+    )
+    MaxLength = 200
+    ParentFont = False
+    TabOrder = 2
+    OnChange = MHelpChange
+  end
+  object Label3: TLabel
+    Left = 10
+    Height = 15
+    Top = 115
+    Width = 28
+    Caption = 'Help:'
+  end
+end

@@ -1,0 +1,138 @@
+object FormInfo: TFormInfo
+  Left = 671
+  Height = 253
+  Top = 461
+  Width = 569
+  BorderIcons = [biSystemMenu]
+  BorderStyle = bsSingle
+  Caption = 'About'
+  ClientHeight = 253
+  ClientWidth = 569
+  Position = poMainFormCenter
+  LCLVersion = '4.6.0.0'
+  object GroupBox1: TGroupBox
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = Owner
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    AnchorSideBottom.Control = Owner
+    AnchorSideBottom.Side = asrBottom
+    Left = 3
+    Height = 247
+    Top = 3
+    Width = 563
+    Anchors = [akTop, akLeft, akRight, akBottom]
+    BorderSpacing.Left = 3
+    BorderSpacing.Top = 3
+    BorderSpacing.Right = 3
+    BorderSpacing.Bottom = 3
+    ClientHeight = 227
+    ClientWidth = 559
+    Color = clInfoBk
+    ParentBackground = False
+    ParentColor = False
+    TabOrder = 0
+    object Label1: TLabel
+      AnchorSideLeft.Control = GroupBox1
+      AnchorSideRight.Control = GroupBox1
+      AnchorSideRight.Side = asrBottom
+      Left = 0
+      Height = 22
+      Top = -10
+      Width = 559
+      Alignment = taCenter
+      Anchors = [akTop, akLeft, akRight]
+      Caption = 'Terminal for working with COM and TСP connections'
+      Font.CharSet = RUSSIAN_CHARSET
+      Font.Height = -19
+      Font.Name = 'Consolas'
+      Font.Pitch = fpFixed
+      Font.Quality = fqDraft
+      Font.Style = [fsBold]
+      ParentFont = False
+    end
+    object LblVer: TLabel
+      AnchorSideLeft.Control = GroupBox1
+      AnchorSideRight.Control = GroupBox1
+      AnchorSideRight.Side = asrBottom
+      Left = 0
+      Height = 32
+      Top = 18
+      Width = 559
+      Alignment = taCenter
+      Anchors = [akTop, akLeft, akRight]
+      Caption = 'TerminalMLT v1.012b (05.08.2026)'
+      Font.CharSet = RUSSIAN_CHARSET
+      Font.Height = -27
+      Font.Name = 'Consolas'
+      Font.Pitch = fpFixed
+      Font.Quality = fqDraft
+      Font.Style = [fsBold]
+      ParentFont = False
+    end
+    object LblDonat: TLabel
+      AnchorSideLeft.Control = GroupBox1
+      AnchorSideRight.Control = GroupBox1
+      AnchorSideRight.Side = asrBottom
+      Left = 0
+      Height = 22
+      Top = 198
+      Width = 559
+      Alignment = taCenter
+      Anchors = [akTop, akLeft, akRight]
+      Caption = '1111 2222 3333 4744 '
+      Font.CharSet = RUSSIAN_CHARSET
+      Font.Height = -19
+      Font.Name = 'Consolas'
+      Font.Pitch = fpFixed
+      Font.Quality = fqDraft
+      Font.Style = [fsBold]
+      ParentFont = False
+    end
+    object Memo1: TMemo
+      AnchorSideLeft.Control = GroupBox1
+      AnchorSideRight.Control = GroupBox1
+      AnchorSideRight.Side = asrBottom
+      Left = 0
+      Height = 104
+      Top = 86
+      Width = 559
+      Alignment = taCenter
+      Anchors = [akTop, akLeft, akRight]
+      Color = clInfoBk
+      Font.CharSet = RUSSIAN_CHARSET
+      Font.Height = -19
+      Font.Name = 'Consolas'
+      Font.Pitch = fpFixed
+      Font.Quality = fqDraft
+      Lines.Strings = (
+        'FREE program. Distributed as is. '
+        'The author does not bear any responsibility '
+        'for possible direct or indirect damage as a '
+        'result of using this program.'
+      )
+      ParentFont = False
+      ReadOnly = True
+      TabOrder = 0
+    end
+    object LblDonat1: TLabel
+      AnchorSideLeft.Control = GroupBox1
+      AnchorSideRight.Control = GroupBox1
+      AnchorSideRight.Side = asrBottom
+      Left = 0
+      Height = 22
+      Top = 58
+      Width = 559
+      Alignment = taCenter
+      Anchors = [akTop, akLeft, akRight]
+      Caption = 'Ivan160508@yandex.ru'
+      Font.CharSet = RUSSIAN_CHARSET
+      Font.Height = -19
+      Font.Name = 'Consolas'
+      Font.Pitch = fpFixed
+      Font.Quality = fqDraft
+      Font.Style = [fsBold]
+      ParentFont = False
+    end
+  end
+end

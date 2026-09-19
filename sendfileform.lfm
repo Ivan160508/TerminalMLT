@@ -1,0 +1,73 @@
+object FormSendFile: TFormSendFile
+  Left = 637
+  Height = 120
+  Top = 440
+  Width = 273
+  BorderIcons = [biSystemMenu]
+  BorderStyle = bsSingle
+  Caption = 'Reading a file before sending'
+  ClientHeight = 120
+  ClientWidth = 273
+  Position = poMainFormCenter
+  LCLVersion = '4.8.0.0'
+  OnActivate = FormActivate
+  OnClose = FormClose
+  OnCreate = FormCreate
+  object GroupBox1: TGroupBox
+    Left = 6
+    Height = 113
+    Top = 0
+    Width = 260
+    ClientHeight = 93
+    ClientWidth = 256
+    TabOrder = 0
+    object Label1: TLabel
+      Left = 8
+      Height = 15
+      Top = -2
+      Width = 105
+      Caption = 'Bytes read from file:'
+    end
+    object StReadData: TStaticText
+      Left = 126
+      Height = 17
+      Top = -4
+      Width = 123
+      Alignment = taCenter
+      BorderStyle = sbsSunken
+      Caption = '0'
+      Font.CharSet = RUSSIAN_CHARSET
+      Font.Name = 'Consolas'
+      Font.Pitch = fpFixed
+      Font.Quality = fqDraft
+      Font.Style = [fsBold]
+      ParentFont = False
+      TabOrder = 0
+    end
+    object BTCancel: TButton
+      Left = 8
+      Height = 25
+      Top = 26
+      Width = 241
+      Caption = 'Stop reading file'
+      TabOrder = 1
+      OnClick = BTCancelClick
+    end
+    object BtStopCancelSend: TButton
+      Left = 8
+      Height = 25
+      Top = 58
+      Width = 241
+      Caption = 'Stop reading the file and cancel sending'
+      TabOrder = 2
+      OnClick = BtStopCancelSendClick
+    end
+  end
+  object TmrUpd: TTimer
+    Enabled = False
+    Interval = 100
+    OnTimer = TmrUpdTimer
+    Left = 6
+    Top = 2
+  end
+end

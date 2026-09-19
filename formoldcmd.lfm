@@ -1,0 +1,71 @@
+object Oldcmdform: TOldcmdform
+  Left = 425
+  Height = 472
+  Top = 238
+  Width = 1171
+  BorderIcons = [biSystemMenu, biMaximize]
+  Caption = 'Oldcmdform'
+  ClientHeight = 472
+  ClientWidth = 1171
+  Position = poMainFormCenter
+  LCLVersion = '4.8.0.0'
+  OnActivate = FormActivate
+  OnCreate = FormCreate
+  object LBOldCmd: TListBox
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = Owner
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    AnchorSideBottom.Control = BtClear
+    Left = 2
+    Height = 439
+    Top = 2
+    Width = 1167
+    Anchors = [akTop, akLeft, akRight, akBottom]
+    BorderSpacing.Left = 2
+    BorderSpacing.Top = 2
+    BorderSpacing.Right = 2
+    BorderSpacing.Bottom = 2
+    Font.CharSet = RUSSIAN_CHARSET
+    Font.Height = -11
+    Font.Name = 'Consolas'
+    Font.Pitch = fpFixed
+    Font.Quality = fqDraft
+    Font.Style = [fsBold]
+    ItemHeight = 0
+    ParentFont = False
+    TabOrder = 0
+    OnKeyDown = LBOldCmdKeyDown
+  end
+  object BtClear: TButton
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    AnchorSideBottom.Control = Owner
+    AnchorSideBottom.Side = asrBottom
+    Left = 1006
+    Height = 27
+    Top = 443
+    Width = 163
+    Anchors = [akTop, akRight, akBottom]
+    BorderSpacing.Right = 2
+    BorderSpacing.Bottom = 2
+    Caption = 'Clear list and close form'
+    TabOrder = 1
+    OnClick = BtClearClick
+  end
+  object RBEn: TRadioButton
+    AnchorSideTop.Control = BtClear
+    AnchorSideRight.Control = BtClear
+    AnchorSideBottom.Control = BtClear
+    AnchorSideBottom.Side = asrBottom
+    Left = 918
+    Height = 27
+    Top = 443
+    Width = 81
+    Anchors = [akTop, akRight, akBottom]
+    BorderSpacing.Right = 7
+    Caption = 'Enable clear'
+    TabOrder = 2
+    OnClick = RBEnClick
+  end
+end

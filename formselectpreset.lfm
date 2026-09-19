@@ -1,0 +1,72 @@
+object FormSelectPresets: TFormSelectPresets
+  Left = 567
+  Height = 551
+  Top = 207
+  Width = 1044
+  Caption = 'Select preset'
+  ClientHeight = 551
+  ClientWidth = 1044
+  Position = poMainFormCenter
+  LCLVersion = '4.6.0.0'
+  OnActivate = FormActivate
+  object GroupBox1: TGroupBox
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = Owner
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    AnchorSideBottom.Control = StaticText1
+    Left = 5
+    Height = 528
+    Top = 0
+    Width = 1034
+    Anchors = [akTop, akLeft, akRight, akBottom]
+    BorderSpacing.Left = 5
+    BorderSpacing.Right = 5
+    ClientHeight = 508
+    ClientWidth = 1030
+    TabOrder = 0
+    object ListPresets: TListBox
+      AnchorSideLeft.Control = GroupBox1
+      AnchorSideTop.Control = GroupBox1
+      AnchorSideRight.Control = GroupBox1
+      AnchorSideRight.Side = asrBottom
+      AnchorSideBottom.Control = GroupBox1
+      AnchorSideBottom.Side = asrBottom
+      Left = 5
+      Height = 503
+      Top = 0
+      Width = 1020
+      Anchors = [akTop, akLeft, akRight, akBottom]
+      BorderSpacing.Left = 5
+      BorderSpacing.Right = 5
+      BorderSpacing.Bottom = 5
+      Font.CharSet = RUSSIAN_CHARSET
+      Font.Height = -16
+      Font.Name = 'Consolas'
+      Font.Pitch = fpFixed
+      Font.Quality = fqDraft
+      Font.Style = [fsBold]
+      ItemHeight = 0
+      ParentFont = False
+      TabOrder = 0
+      OnDblClick = ListPresetsDblClick
+    end
+  end
+  object StaticText1: TStaticText
+    AnchorSideLeft.Control = GroupBox1
+    AnchorSideRight.Control = GroupBox1
+    AnchorSideRight.Side = asrBottom
+    AnchorSideBottom.Control = Owner
+    AnchorSideBottom.Side = asrBottom
+    Left = 5
+    Height = 18
+    Top = 528
+    Width = 1034
+    Alignment = taCenter
+    Anchors = [akLeft, akRight, akBottom]
+    BorderSpacing.Bottom = 5
+    BorderStyle = sbsSunken
+    Caption = 'To select a preset, double-click the right mouse button on the name in the list'
+    TabOrder = 1
+  end
+end

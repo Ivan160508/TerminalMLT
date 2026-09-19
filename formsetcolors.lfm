@@ -1,0 +1,459 @@
+object FormColors: TFormColors
+  Left = 403
+  Height = 579
+  Top = 207
+  Width = 908
+  BorderIcons = []
+  BorderStyle = bsSingle
+  Caption = 'FormColors'
+  ClientHeight = 579
+  ClientWidth = 908
+  Position = poMainFormCenter
+  LCLVersion = '4.6.0.0'
+  OnActivate = FormActivate
+  OnCreate = FormCreate
+  object GroupBox1: TGroupBox
+    Left = 10
+    Height = 354
+    Top = 2
+    Width = 430
+    Caption = 'Colors'
+    ClientHeight = 334
+    ClientWidth = 426
+    TabOrder = 0
+    object PColorBG_TXT: TPanel
+      Left = 268
+      Height = 22
+      Top = 0
+      Width = 150
+      TabOrder = 0
+      OnClick = PColorBG_TXTClick
+    end
+    object Label1: TLabel
+      Left = 10
+      Height = 15
+      Top = 7
+      Width = 163
+      Caption = 'Background color in TXT mode'
+    end
+    object PColorBG_RTF: TPanel
+      Left = 268
+      Height = 22
+      Top = 30
+      Width = 150
+      TabOrder = 1
+      OnClick = PColorBG_RTFClick
+    end
+    object Label2: TLabel
+      Left = 10
+      Height = 15
+      Top = 37
+      Width = 162
+      Caption = 'Background color in RTF mode'
+    end
+    object PColorBG_PAUSE_TXT: TPanel
+      Left = 268
+      Height = 22
+      Top = 60
+      Width = 150
+      TabOrder = 2
+      OnClick = PColorBG_PAUSE_TXTClick
+    end
+    object Label3: TLabel
+      Left = 10
+      Height = 15
+      Top = 67
+      Width = 200
+      Caption = 'Background color in PAUSE TXT mode'
+    end
+    object PColorFont_TXT: TPanel
+      Left = 268
+      Height = 22
+      Top = 120
+      Width = 150
+      TabOrder = 3
+      OnClick = PColorFont_TXTClick
+    end
+    object Label4: TLabel
+      Left = 10
+      Height = 15
+      Top = 127
+      Width = 123
+      Caption = 'Font color in TXT mode'
+    end
+    object PColorFont_Send: TPanel
+      Left = 268
+      Height = 22
+      Top = 150
+      Width = 150
+      TabOrder = 4
+      OnClick = PColorFont_SendClick
+    end
+    object Label5: TLabel
+      Left = 10
+      Height = 15
+      Top = 157
+      Width = 150
+      Caption = 'Font color of SENT packages'
+    end
+    object PColorFont_RA: TPanel
+      Left = 268
+      Height = 22
+      Top = 180
+      Width = 150
+      TabOrder = 5
+      OnClick = PColorFont_RAClick
+    end
+    object Label6: TLabel
+      Left = 10
+      Height = 15
+      Top = 187
+      Width = 184
+      Caption = 'Decoding font color in ASCII mode'
+    end
+    object PColorFont_RH: TPanel
+      Left = 268
+      Height = 22
+      Top = 210
+      Width = 150
+      TabOrder = 6
+      OnClick = PColorFont_RHClick
+    end
+    object Label7: TLabel
+      Left = 10
+      Height = 15
+      Top = 217
+      Width = 178
+      Caption = 'Decoding font color in HEX mode'
+    end
+    object PColorFont_RD: TPanel
+      Left = 268
+      Height = 22
+      Top = 240
+      Width = 150
+      TabOrder = 7
+      OnClick = PColorFont_RDClick
+    end
+    object Label8: TLabel
+      Left = 10
+      Height = 15
+      Top = 247
+      Width = 178
+      Caption = 'Decoding font color in DEC mode'
+    end
+    object PColorFont_RC: TPanel
+      Left = 268
+      Height = 22
+      Top = 270
+      Width = 150
+      TabOrder = 8
+      OnClick = PColorFont_RCClick
+    end
+    object Label9: TLabel
+      Left = 10
+      Height = 15
+      Top = 277
+      Width = 203
+      Caption = 'Decoding font color in CUSTOM mode'
+    end
+    object PColorBG_PAUSE_RTF: TPanel
+      Left = 268
+      Height = 22
+      Top = 90
+      Width = 150
+      TabOrder = 9
+      OnClick = PColorBG_PAUSE_RTFClick
+    end
+    object Label10: TLabel
+      Left = 10
+      Height = 15
+      Top = 97
+      Width = 199
+      Caption = 'Background color in PAUSE RTF mode'
+    end
+    object PColorFont_SM: TPanel
+      Left = 268
+      Height = 22
+      Top = 300
+      Width = 150
+      TabOrder = 10
+      OnClick = PColorFont_SMClick
+    end
+    object Label12: TLabel
+      Left = 10
+      Height = 15
+      Top = 307
+      Width = 116
+      Caption = 'Service message color'
+    end
+  end
+  object BtCancel: TButton
+    Left = 734
+    Height = 25
+    Top = 546
+    Width = 75
+    Caption = 'Cancel'
+    TabOrder = 1
+    OnClick = BtCancelClick
+  end
+  object BtOk: TButton
+    Left = 825
+    Height = 25
+    Top = 546
+    Width = 75
+    Caption = 'OK'
+    TabOrder = 2
+    OnClick = BtOkClick
+  end
+  object GroupBox2: TGroupBox
+    Left = 448
+    Height = 280
+    Top = 2
+    Width = 452
+    Caption = 'Font Size'
+    ClientHeight = 260
+    ClientWidth = 448
+    TabOrder = 3
+    object TBFontSize: TTrackBar
+      Left = 12
+      Height = 250
+      Top = 0
+      Width = 46
+      Max = 72
+      Min = 8
+      Orientation = trVertical
+      Position = 8
+      OnChange = TBFontSizeChange
+      TabOrder = 0
+    end
+    object PnlFont: TPanel
+      Left = 56
+      Height = 250
+      Top = 0
+      Width = 386
+      Caption = 'PnlFont'
+      Color = clWhite
+      Font.CharSet = RUSSIAN_CHARSET
+      Font.Height = -96
+      Font.Name = 'Consolas'
+      Font.Pitch = fpFixed
+      Font.Quality = fqDraft
+      Font.Style = [fsBold]
+      ParentBackground = False
+      ParentColor = False
+      ParentFont = False
+      TabOrder = 1
+    end
+  end
+  object GroupBox3: TGroupBox
+    Left = 10
+    Height = 83
+    Top = 450
+    Width = 430
+    Caption = 'Separator line in the log between received packets'
+    ClientHeight = 63
+    ClientWidth = 426
+    TabOrder = 4
+    object EdtEmptyLine: TEdit
+      Left = 12
+      Height = 23
+      Top = 4
+      Width = 406
+      MaxLength = 200
+      TabOrder = 0
+      OnChange = EdtEmptyLineChange
+    end
+    object PColorFont_EL: TPanel
+      Left = 268
+      Height = 22
+      Top = 34
+      Width = 150
+      TabOrder = 1
+      OnClick = PColorFont_ELClick
+    end
+    object Label11: TLabel
+      Left = 12
+      Height = 15
+      Top = 41
+      Width = 102
+      Caption = 'Separator line color'
+    end
+  end
+  object GroupBox4: TGroupBox
+    Left = 448
+    Height = 72
+    Top = 284
+    Width = 452
+    Caption = 'Autoclear'
+    ClientHeight = 52
+    ClientWidth = 448
+    TabOrder = 5
+    object Label13: TLabel
+      Left = 12
+      Height = 15
+      Top = 2
+      Width = 342
+      Caption = 'Clear the log window if the number of characters is greater than: '
+    end
+    object EdtMaxLenLog: TEdit
+      Left = 380
+      Height = 23
+      Top = -6
+      Width = 62
+      MaxLength = 5
+      NumbersOnly = True
+      TabOrder = 0
+      Text = '99999'
+      OnChange = EdtMaxLenLogChange
+    end
+    object CBEnterClear: TCheckBox
+      Left = 12
+      Height = 19
+      Top = 26
+      Width = 302
+      Caption = 'Clear the log window when sending a packet to a port'
+      TabOrder = 1
+      OnClick = CBEnterClearClick
+    end
+  end
+  object GroupBox5: TGroupBox
+    Left = 448
+    Height = 88
+    Top = 360
+    Width = 452
+    Caption = 'Control of missing incoming data'
+    ClientHeight = 68
+    ClientWidth = 448
+    TabOrder = 6
+    object CBNoRxData: TCheckBox
+      Left = 12
+      Height = 19
+      Top = 4
+      Width = 251
+      Caption = 'Control the stop of incoming data reception'
+      TabOrder = 0
+      OnClick = CBNoRxDataClick
+    end
+    object PColorBG_NoDataRX: TPanel
+      Left = 292
+      Height = 22
+      Top = 28
+      Width = 150
+      TabOrder = 1
+      OnClick = PColorBG_NoDataRXClick
+    end
+    object Label14: TLabel
+      Left = 12
+      Height = 15
+      Top = 35
+      Width = 236
+      Caption = 'Background color when reception is stopped'
+    end
+    object EdtMaxPauseRX: TEdit
+      Left = 380
+      Height = 23
+      Top = 0
+      Width = 62
+      MaxLength = 7
+      NumbersOnly = True
+      TabOrder = 2
+      OnChange = EdtMaxPauseRXChange
+    end
+    object Label15: TLabel
+      Left = 272
+      Height = 15
+      Top = 5
+      Width = 102
+      Caption = 'Max. pause RX, ms:'
+    end
+  end
+  object GroupBox6: TGroupBox
+    Left = 10
+    Height = 88
+    Top = 360
+    Width = 430
+    Caption = 'Displaying additional data'
+    ClientHeight = 68
+    ClientWidth = 426
+    TabOrder = 7
+    object CB_PrintDateInTimeStamp: TCheckBox
+      Left = 10
+      Height = 19
+      Top = 5
+      Width = 155
+      Caption = 'Display date in timestamp'
+      TabOrder = 0
+      OnClick = CB_PrintDateInTimeStampClick
+    end
+    object CB_NonPrintInASCII: TCheckBox
+      Left = 10
+      Height = 19
+      Top = 31
+      Width = 262
+      Caption = 'Display non-printing characters in ASCII mode'
+      TabOrder = 1
+      OnClick = CB_NonPrintInASCIIClick
+    end
+  end
+  object GroupBox7: TGroupBox
+    Left = 448
+    Height = 83
+    Top = 450
+    Width = 452
+    Caption = 'Connection Loss Alarm'
+    ClientHeight = 63
+    ClientWidth = 448
+    TabOrder = 8
+    object CBAlarm: TCheckBox
+      Left = 12
+      Height = 19
+      Top = 8
+      Width = 67
+      Caption = 'Alarm on'
+      TabOrder = 0
+      OnClick = CBAlarmClick
+    end
+    object PColorBG_ConnectLostAlarm: TPanel
+      Left = 292
+      Height = 22
+      Top = 34
+      Width = 150
+      TabOrder = 1
+      OnClick = PColorBG_ConnectLostAlarmClick
+    end
+    object Label16: TLabel
+      Left = 12
+      Height = 15
+      Top = 41
+      Width = 225
+      Caption = 'Background color when connection is lost:'
+    end
+  end
+  object ColorDialog: TColorDialog
+    Color = clBlack
+    CustomColors.Strings = (
+      'ColorA=000000'
+      'ColorB=000080'
+      'ColorC=008000'
+      'ColorD=008080'
+      'ColorE=800000'
+      'ColorF=800080'
+      'ColorG=808000'
+      'ColorH=808080'
+      'ColorI=C0C0C0'
+      'ColorJ=0000FF'
+      'ColorK=00FF00'
+      'ColorL=00FFFF'
+      'ColorM=FF0000'
+      'ColorN=FF00FF'
+      'ColorO=FFFF00'
+      'ColorP=FFFFFF'
+      'ColorQ=C0DCC0'
+      'ColorR=F0CAA6'
+      'ColorS=F0FBFF'
+      'ColorT=A4A0A0'
+    )
+    Left = 214
+    Top = 176
+  end
+end

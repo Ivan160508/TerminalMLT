@@ -1,0 +1,126 @@
+object FormModeSendPackets: TFormModeSendPackets
+  Left = 547
+  Height = 198
+  Top = 444
+  Width = 240
+  BorderIcons = []
+  BorderStyle = bsSingle
+  ClientHeight = 198
+  ClientWidth = 240
+  Constraints.MaxHeight = 198
+  Constraints.MaxWidth = 240
+  Constraints.MinHeight = 198
+  Constraints.MinWidth = 240
+  Position = poMainFormCenter
+  LCLVersion = '4.6.0.0'
+  OnActivate = FormActivate
+  object GroupBox1: TGroupBox
+    Left = 10
+    Height = 151
+    Top = 4
+    Width = 222
+    Caption = 'Packet sending mode'
+    ClientHeight = 131
+    ClientWidth = 218
+    TabOrder = 0
+    object RBManualSend: TRadioButton
+      AnchorSideLeft.Control = GroupBox1
+      AnchorSideTop.Control = GroupBox1
+      Left = 10
+      Height = 19
+      Top = 5
+      Width = 58
+      BorderSpacing.Left = 10
+      BorderSpacing.Top = 5
+      Caption = 'Manual'
+      TabOrder = 0
+      OnClick = RBManualSendClick
+    end
+    object RBWhenShoosing: TRadioButton
+      AnchorSideLeft.Control = GroupBox1
+      AnchorSideTop.Control = RBManualSend
+      AnchorSideTop.Side = asrBottom
+      Left = 10
+      Height = 19
+      Top = 29
+      Width = 121
+      BorderSpacing.Left = 10
+      BorderSpacing.Top = 5
+      Caption = 'On click of a macro'
+      TabOrder = 1
+      OnClick = RBWhenShoosingClick
+    end
+    object RBAfterAnswering: TRadioButton
+      AnchorSideLeft.Control = GroupBox1
+      AnchorSideTop.Control = RBWhenShoosing
+      AnchorSideTop.Side = asrBottom
+      Left = 10
+      Height = 19
+      Top = 53
+      Width = 101
+      BorderSpacing.Left = 10
+      BorderSpacing.Top = 5
+      Caption = 'After answering'
+      TabOrder = 2
+      OnClick = RBAfterAnsweringClick
+    end
+    object RBPeriodic: TRadioButton
+      AnchorSideLeft.Control = GroupBox1
+      AnchorSideTop.Control = RBAfterAnswering
+      AnchorSideTop.Side = asrBottom
+      Left = 10
+      Height = 19
+      Top = 77
+      Width = 61
+      BorderSpacing.Left = 10
+      BorderSpacing.Top = 5
+      Caption = 'Periodic'
+      TabOrder = 3
+      OnClick = RBPeriodicClick
+    end
+    object RBByteByByte: TRadioButton
+      AnchorSideLeft.Control = GroupBox1
+      AnchorSideTop.Control = RBPeriodic
+      AnchorSideTop.Side = asrBottom
+      Left = 10
+      Height = 19
+      Top = 101
+      Width = 83
+      BorderSpacing.Left = 10
+      BorderSpacing.Top = 5
+      Caption = 'Byte by byte'
+      TabOrder = 4
+      OnClick = RBByteByByteClick
+    end
+    object EdtPeriod: TEdit
+      AnchorSideTop.Control = RBPeriodic
+      AnchorSideBottom.Control = RBPeriodic
+      AnchorSideBottom.Side = asrBottom
+      Left = 148
+      Height = 19
+      Top = 77
+      Width = 58
+      Anchors = [akTop, akLeft, akBottom]
+      TabOrder = 5
+      Text = 'EdtPeriod'
+    end
+  end
+  object BtnCancel: TButton
+    Left = 10
+    Height = 25
+    Top = 164
+    Width = 100
+    Caption = 'Cancel'
+    TabOrder = 1
+    OnClick = BtnCancelClick
+  end
+  object BtnOk: TButton
+    Left = 132
+    Height = 25
+    Top = 164
+    Width = 100
+    Caption = 'OK'
+    TabOrder = 2
+    OnClick = BtnOkClick
+  end
+end
