@@ -7,7 +7,7 @@ interface
 uses
   Classes, SysUtils, Forms, Controls, Graphics, Dialogs, Menus, ExtCtrls, SendFileForm, DateUtils, FormSelectPreset,
   StdCtrls, ComCtrls, comport, RichMemo, common, LazUTF8,  Clipbrd,  Windows, FormSendMode, FormNewLogFile,
-  FormSetLog, FormSetColors, readfile, formdecodecustom, formoldcmd, FormMacrosEdit, TMBOld, FormAbout, tcpportclient, tcpportserver;
+  FormSetLog, FormSetColors, readfile, formdecodecustom, formoldcmd, FormMacrosEdit, TMBOld, FormAbout, tcpportclient, tcpportserver, LCLProc;
 
 type
 
@@ -328,6 +328,7 @@ type
     RBHelp: TRadioButton;
     RBTcpS: TRadioButton;
     SaveCfgDialog: TSaveDialog;
+    StReadUTF8: TStaticText;
     STWorkTime: TStaticText;
     STSendAscii: TStaticText;
     STSendDec: TStaticText;
@@ -514,6 +515,7 @@ type
     procedure StReadCustomDblClick(Sender: TObject);
     procedure STReadDecClick(Sender: TObject);
     procedure STReadHexClick(Sender: TObject);
+    procedure StReadUTF8Click(Sender: TObject);
     procedure STSendAsciiClick(Sender: TObject);
     procedure STSendDecClick(Sender: TObject);
     procedure STSendHexClick(Sender: TObject);
@@ -609,6 +611,8 @@ type TPreset = record
   ColorFont_RH       : TColor;
   ColorFont_RD       : TColor;
   ColorFont_RC       : TColor;
+  ColorFont_RU       : TColor;
+
 
   ColorFont_EL       : TColor;
   ColorFont_SM       : TColor;
@@ -698,6 +702,7 @@ var
   StrOutHex        : string;
   StrOutDec        : string;
   StrOutCustom     : string;
+  StrOutUTF        : string;
   StrAddInfo       : string;
   StrAddTmp        : string;
   StrLogOld        : string;
@@ -1199,6 +1204,8 @@ function SendPacket(pPort : Pointer; Connect: TConnect; cmd : string; tail: stri
       res : boolean;
       isSend : boolean;
       PortName : string;
+      strTmp : string;
+      isUTF  : boolean;
   begin
     res := true;
     if (cmd <> '') or (tail <> '') then
@@ -1247,8 +1254,13 @@ function SendPacket(pPort : Pointer; Connect: TConnect; cmd : string; tail: stri
             else
               StrAddInfo := StrAddInfo + ' ';
 
+            //SetString(StrTmp, PAnsiChar(@BufWrite[0]), Len);
+            isUTF := false;
+            strTmp := StrAddInfo;
+
             for i := 1 to len do
               begin
+                isUTF := isUTF or (BufWrite[i - 1] > 127);
                 case Settings.Preset[Settings.NumListMacros].DecodeMode of
                   TDecodeMode.TDAscii :
                     if Settings.Preset[Settings.NumListMacros].isNonPrintASCII then
@@ -1259,8 +1271,15 @@ function SendPacket(pPort : Pointer; Connect: TConnect; cmd : string; tail: stri
                   TDecodeMode.TDHex   : StrAddInfo := StrAddInfo + IntToHex(BufWrite[i - 1], 2) + ' ';
                   TDecodeMode.TDDec   : StrAddInfo := StrAddInfo + Format('%03d ', [BufWrite[i - 1]]);
                 end;
-              if isLogBin and Settings.isTxBinLog and not isPauseFileLogBin then
-                 Write(BinFileLog, BufWrite[i-1]);
+                if isLogBin and Settings.isTxBinLog and not isPauseFileLogBin then
+                  Write(BinFileLog, BufWrite[i-1]);
+              end;
+
+            if isUTF and (Settings.Preset[Settings.NumListMacros].DecodeMode = TDecodeMode.TDAscii) then
+              begin
+                StrAddInfo := strTmp;
+                SetString(StrTmp, PAnsiChar(@BufWrite[0]), Len);
+                StrAddInfo := StrAddInfo + StrTmp;
               end;
 
             AddLogLine(StrAddInfo, Settings.Preset[Settings.NumListMacros].ColorFont_Send, TStrInLog.TStrTx);
@@ -2429,6 +2448,28 @@ begin
           end;
         //.............................................
 
+        Tag := VCFG + Format('%.3d', [nList]) + '_ColorFont_RU';
+        if isGet then
+          begin
+            if (Pos(Tag, StrCfg) > 0) and not isOK then
+              begin
+                ItemCfg := Trim(GetTagValue(StrCfg, Tag));
+                if ItemCfg[1] = '$' then
+                  Settings.Preset[nList].ColorFont_RU := TColor((StrToHex(ItemCfg[2] + ItemCfg[3]) shl 24) or
+                                                                (StrToHex(ItemCfg[4] + ItemCfg[5]) shl 16) or
+                                                                (StrToHex(ItemCfg[6] + ItemCfg[7]) shl  8) or
+                                                                (StrToHex(ItemCfg[8] + ItemCfg[9]) shl  0));
+                isOK                 := true;
+                Exit;
+              end;
+          end
+        else if Settings.Preset[nList].ColorFont_RU <> SDef^.Preset[nList].ColorFont_RU then
+          begin
+            ItemCfg := SetStrParamCfg(0, Tag, '$' + IntToHex(Integer(Settings.Preset[nList].ColorFont_RU),8));
+            WriteLn(ConfigFile, ItemCfg);
+          end;
+        //.............................................
+
 
         Tag := VCFG + Format('%.3d', [nList]) + '_ColorFont_RD';
         if isGet then
@@ -3562,6 +3603,7 @@ begin
       Sett^.Preset[nList].ColorFont_RH   := clGreen;
       Sett^.Preset[nList].ColorFont_RD   := clGreen;
       Sett^.Preset[nList].ColorFont_RC   := clGreen;
+      Sett^.Preset[nList].ColorFont_RU   := clGreen;
       Sett^.Preset[nList].ColorFont_EL   := clLime;
 
       Sett^.Preset[nList].ColorFont_SM   := clBlack;
@@ -3945,7 +3987,7 @@ begin
       FormMain.STReadAscii.Font.Color := InvertColor(Settings.Preset[Settings.NumListMacros].ColorFont_RA);
     end;
 
-  if Settings.Preset[Settings.NumListMacros].ReadMode and byte(TReadMode.TReadHex  )  = 0 then
+  if Settings.Preset[Settings.NumListMacros].ReadMode and byte(TReadMode.TReadHex)  = 0 then
     begin
       FormMain.STReadHex.Color   := FormMain.Color;
       FormMain.STReadHex.Font.Color := InvertColor(FormMain.Color);
@@ -3977,6 +4019,18 @@ begin
       FormMain.STReadCustom.Color:= Settings.Preset[Settings.NumListMacros].ColorFont_RC;
       FormMain.STReadCustom.Font.Color := InvertColor(Settings.Preset[Settings.NumListMacros].ColorFont_RC);
     end;
+
+  if Settings.Preset[Settings.NumListMacros].ReadMode and byte(TReadMode.TReadUTF) = 0 then
+    begin
+      FormMain.StReadUTF8.Color:= FormMain.Color;
+      FormMain.STReadUTF8.Font.Color := InvertColor(FormMain.Color);
+    end
+  else
+    begin
+      FormMain.STReadUTF8.Color:= Settings.Preset[Settings.NumListMacros].ColorFont_RU;
+      FormMain.STReadUTF8.Font.Color := InvertColor(Settings.Preset[Settings.NumListMacros].ColorFont_RU);
+    end;
+
 
   FormMain.STSendAscii.Color := FormMain.Color;
   FormMain.STSendHex.Color   := FormMain.Color;
@@ -4670,6 +4724,7 @@ begin
   FormColors.ColorFont_RH   := Settings.Preset[Settings.NumListMacros].ColorFont_RH;
   FormColors.ColorFont_RD   := Settings.Preset[Settings.NumListMacros].ColorFont_RD;
   FormColors.ColorFont_RC   := Settings.Preset[Settings.NumListMacros].ColorFont_RC;
+  FormColors.ColorFont_RU   := Settings.Preset[Settings.NumListMacros].ColorFont_RU;
   FormColors.ColorFont_EL   := Settings.Preset[Settings.NumListMacros].ColorFont_EL;
   FormColors.ColorFont_SM   := Settings.Preset[Settings.NumListMacros].ColorFont_SM;
   FormColors.FontSize       := Settings.Preset[Settings.NumListMacros].FontSizeLog;
@@ -4701,6 +4756,7 @@ begin
       Settings.Preset[Settings.NumListMacros].ColorFont_RH      := FormColors.ColorFont_RH;
       Settings.Preset[Settings.NumListMacros].ColorFont_RD      := FormColors.ColorFont_RD;
       Settings.Preset[Settings.NumListMacros].ColorFont_RC      := FormColors.ColorFont_RC;
+      Settings.Preset[Settings.NumListMacros].ColorFont_RU      := FormColors.ColorFont_RU;
       Settings.Preset[Settings.NumListMacros].ColorFont_EL      := FormColors.ColorFont_EL;
       Settings.Preset[Settings.NumListMacros].ColorFont_SM      := FormColors.ColorFont_SM;
       Settings.Preset[Settings.NumListMacros].FontSizeLog       := FormColors.FontSize;
@@ -5850,6 +5906,21 @@ begin
   (Sender as TStaticText).Font.Color := InvertColor((Sender as TStaticText).Color);
 end;
 
+procedure TFormMain.StReadUTF8Click(Sender: TObject);
+begin
+ if Settings.Preset[Settings.NumListMacros].ReadMode and byte(TReadMode.TReadUTF) = 0 then
+   begin
+     Settings.Preset[Settings.NumListMacros].ReadMode := Settings.Preset[Settings.NumListMacros].ReadMode + byte(TReadMode.TReadUTF);
+     (Sender as TStaticText).Color := Settings.Preset[Settings.NumListMacros].ColorFont_RU;
+   end
+ else
+   begin
+     Settings.Preset[Settings.NumListMacros].ReadMode := Settings.Preset[Settings.NumListMacros].ReadMode - byte(TReadMode.TReadUTF);
+     (Sender as TStaticText).Color := FormMain.Color;
+   end;
+  (Sender as TStaticText).Font.Color := InvertColor((Sender as TStaticText).Color);
+end;
+
 procedure TFormMain.STSendAsciiClick(Sender: TObject);
 begin
   Settings.Preset[Settings.NumListMacros].DecodeMode := TDecodeMode.TDAscii;
@@ -6297,6 +6368,7 @@ begin
               StrOutDec    := '';
               StrOutCustom := '';
               StrOutAscii  := '';
+              StrOutUTF    := '';
 
               StrAddInfo := '';
 
@@ -6445,6 +6517,41 @@ begin
                       TRP_isOutLine := true;
                     end;
                 end;
+
+///
+              if Settings.Preset[Settings.NumListMacros].ReadMode and byte(TReadMode.TReadUTF) > 0 then
+                begin
+                  StrAddTmp   := '';
+
+                  if Settings.Preset[Settings.NumListMacros].isShowMode then
+                    StrAddTmp := '[U]';
+                  if Settings.Preset[Settings.NumListMacros].isShowDir then
+                    StrAddTmp := StrAddTmp + '>';
+
+
+                  SetString(StrOutUTF, PAnsiChar(@BufRead[0]), ResRead.Cnt);
+
+                  StrOutUTF := ' ' + StrOutUTF;
+
+                  if Settings.Preset[Settings.NumListMacros].CondFilter <> TFilterLog.FL_NoFilter then
+                    TRP_isSubStrCustom := Pos(Settings.Preset[Settings.NumListMacros].FilterStr, StrOutCustom) > 0;
+
+                  if (Settings.Preset[Settings.NumListMacros].CondFilter = TFilterLog.FL_NoFilter)                    or
+                     ((Settings.Preset[Settings.NumListMacros].CondFilter = TFilterLog.FL_NoOut) and not TRP_isSubStrCustom) or
+                     ((Settings.Preset[Settings.NumListMacros].CondFilter = TFilterLog.FL_Out) and TRP_isSubStrCustom)       or
+                     (Settings.Preset[Settings.NumListMacros].CondFilter = TFilterLog.FL_Capture) or
+                     (Settings.Preset[Settings.NumListMacros].FilterStr = '') then
+                    begin
+                      if Settings.Preset[Settings.NumListMacros].FilterStr <> '' then
+                        if Pos(Settings.Preset[Settings.NumListMacros].FilterStr, StrOutCustom) > 0 then
+                          inc(CntMathSubstr);
+                      AddLogLine(StrAddInfo + StrAddTmp + StrOutUTF, Settings.Preset[Settings.NumListMacros].ColorFont_RU, TStrInLog.TStrRx);
+                      TRP_isOutLine := true;
+                    end;
+                end;
+
+///
+
 
                 if (Settings.Preset[Settings.NumListMacros].CondFilter = TFilterLog.FL_Capture) and not isPauseLog and
                    (TRP_isSubStrAscii or TRP_isSubStrHex or TRP_isSubStrDec or TRP_isSubStrCustom) then

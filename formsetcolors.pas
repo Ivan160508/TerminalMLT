@@ -39,6 +39,7 @@ type
     Label14: TLabel;
     Label15: TLabel;
     Label16: TLabel;
+    Label17: TLabel;
     Label2: TLabel;
     Label3: TLabel;
     Label4: TLabel;
@@ -50,6 +51,7 @@ type
     PColorBG_NoDataRX: TPanel;
     PColorFont_EL: TPanel;
     PColorBG_ConnectLostAlarm: TPanel;
+    PColorFont_RU: TPanel;
     PnlFont: TPanel;
     PColorBG_PAUSE_RTF: TPanel;
     PColorBG_TXT: TPanel;
@@ -86,6 +88,7 @@ type
     procedure PColorFont_RCClick(Sender: TObject);
     procedure PColorFont_RDClick(Sender: TObject);
     procedure PColorFont_RHClick(Sender: TObject);
+    procedure PColorFont_RUClick(Sender: TObject);
     procedure PColorFont_SendClick(Sender: TObject);
     procedure PColorFont_SMClick(Sender: TObject);
     procedure PColorFont_TXTClick(Sender: TObject);
@@ -105,6 +108,8 @@ type
     ColorFont_RH   : TColor;
     ColorFont_RD   : TColor;
     ColorFont_RC   : TColor;
+    ColorFont_RU   : TColor;
+
     ColorFont_EL   : TColor;
     ColorFont_SM   : TColor;
 
@@ -154,6 +159,7 @@ begin
   PColorFont_RC.Color   := ColorFont_RC;
   PColorFont_EL.Color   := ColorFont_EL;
   PColorFont_SM.Color   := ColorFont_SM;
+  PColorFont_RU.Color   := ColorFont_RU;
 
   CBAlarm.Checked := isAlarmConnectLost;
   PColorBG_ConnectLostAlarm.Color := ColorBG_AlarmLost;
@@ -333,6 +339,14 @@ begin
       ColorDialog.Color := ColorFont_RH;
   if ColorDialog.Execute then
     ColorFont_RH := ColorDialog.Color;
+  (Sender as TPanel).Color := ColorDialog.Color;
+end;
+
+procedure TFormColors.PColorFont_RUClick(Sender: TObject);
+begin
+  ColorDialog.Color := ColorFont_RU;
+  if ColorDialog.Execute then
+    ColorFont_RU := ColorDialog.Color;
   (Sender as TPanel).Color := ColorDialog.Color;
 end;
 
