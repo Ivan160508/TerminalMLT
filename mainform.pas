@@ -554,10 +554,10 @@ const
   MAX_CNT_BAUDRATES = 50;
 
 type TPreset = record
-  IP_C           : string[254];
-  IPPortC             : word;
-  IP_S           : string[254];
-  IPPortS             : word;
+  IP_C               : string[254];
+  IPPortC            : word;
+  IP_S               : string[254];
+  IPPortS            : word;
   BaudRate           : Cardinal;
   BaudRateS          : Array[0..MAX_CNT_BAUDRATES - 1] of Cardinal;
   bits               : integer;
@@ -588,9 +588,9 @@ type TPreset = record
   OutLogMode         : TOutLogMode;
   ShowHelpMode       : TShowHelpMode;
   TailStr            : string[255];
-  MacrosCmd          : array[1..CNT_MACROS] of string[255];
-  MacrosName         : array[1..CNT_MACROS] of string[255];
-  MacrosHelp         : array[1..CNT_MACROS] of string[255];
+  MacrosCmd          : array[1..CNT_MACROS] of TMacrosCmdStr;
+  MacrosName         : array[1..CNT_MACROS] of TMacrosNameStr;
+  MacrosHelp         : array[1..CNT_MACROS] of TMacrosHelpStr;
   ItCustDecode       : array[0..255]        of TItemDecodeCustom;
   NameMacrosList     : string[255];
 
@@ -1326,7 +1326,7 @@ begin
           Settings.Preset[Settings.NumListMacros].LastCmdList[i] := Settings.Preset[Settings.NumListMacros].LastCmdList[i-1];
           dec(i);
         end;
-      FillChar(Settings.Preset[Settings.NumListMacros].LastCmdList[i].Str[0], LEN_CMD_STR, $00);
+      FillChar(Settings.Preset[Settings.NumListMacros].LastCmdList[i].Str, LEN_CMD_STR, $00);
 
       StringToUTF8Bytes(LastCmd, @Settings.Preset[Settings.NumListMacros].LastCmdList[i].Str[0]);
     end;
@@ -1417,25 +1417,33 @@ var
   nMacros : integer;
 begin
   nMacros := (Sender as TEdit).Tag;
-  FormEditMacros.CmdName := Settings.Preset[Settings.NumListMacros].MacrosName[nMacros];
-  FormEditMacros.CmdLine := Settings.Preset[Settings.NumListMacros].MacrosCmd[nMacros];
-  FormEditMacros.CmdHelp := Settings.Preset[Settings.NumListMacros].MacrosHelp[nMacros];
+
+  FormEditMacros.CmdName := Trim(BytesToUTF8String(Settings.Preset[Settings.NumListMacros].MacrosName[nMacros].Str));
+  FormEditMacros.CmdLine := Trim(BytesToUTF8String(Settings.Preset[Settings.NumListMacros].MacrosCmd[nMacros].Str));
+  FormEditMacros.CmdHelp := Trim(BytesToUTF8String(Settings.Preset[Settings.NumListMacros].MacrosHelp[nMacros].Str));
+
 
   (Sender as TEdit).Color:= clLime;
   FormEditMacros.ShowModal;
-  Settings.Preset[Settings.NumListMacros].MacrosName[nMacros] := FormEditMacros.CmdName;
-  Settings.Preset[Settings.NumListMacros].MacrosCmd[nMacros]  := FormEditMacros.CmdLine;
-  Settings.Preset[Settings.NumListMacros].MacrosHelp[nMacros] := StringReplace(FormEditMacros.CmdHelp, '[$0D$0A]', #13#10, [rfReplaceAll]);
+
+  FillChar(Settings.Preset[Settings.NumListMacros].MacrosName[nMacros].Str, LEN_MACROS_STR, $00);
+  StringToUTF8Bytes(FormEditMacros.CmdName, @Settings.Preset[Settings.NumListMacros].MacrosName[nMacros].Str[0]);
+
+  FillChar(Settings.Preset[Settings.NumListMacros].MacrosCmd[nMacros].Str, LEN_MACROS_STR, $00);
+  StringToUTF8Bytes(FormEditMacros.CmdLine, @Settings.Preset[Settings.NumListMacros].MacrosCmd[nMacros].Str[0]);
+
+  FillChar(Settings.Preset[Settings.NumListMacros].MacrosHelp[nMacros].Str, LEN_MACROS_STR, $00);
+  StringToUTF8Bytes(StringReplace(FormEditMacros.CmdHelp, '[$0D$0A]', #13#10, [rfReplaceAll]), @Settings.Preset[Settings.NumListMacros].MacrosHelp[nMacros].Str[0]);
 
   (Sender as TEdit).Color:= clWindow;
 
   if ModeMacros = MM_Command then
-    (Sender as TEdit).Text := Settings.Preset[Settings.NumListMacros].MacrosCmd[nMacros];
+    (Sender as TEdit).Text := Trim(BytesToUTF8String(TBytes(Settings.Preset[Settings.NumListMacros].MacrosCmd[nMacros].Str)));
 
   if ModeMacros = MM_Name then
-    (Sender as TEdit).Text := Settings.Preset[Settings.NumListMacros].MacrosName[nMacros];
+    (Sender as TEdit).Text := Trim(BytesToUTF8String(TBytes(Settings.Preset[Settings.NumListMacros].MacrosName[nMacros].Str)));
 
-  MHelpEdit.Text := Settings.Preset[Settings.NumListMacros].MacrosHelp[nMacros];
+  MHelpEdit.Text := BytesToUTF8String(TBytes(Settings.Preset[Settings.NumListMacros].MacrosHelp[nMacros].Str));
 
 end;
 
@@ -1560,7 +1568,7 @@ var
   NumMacros : integer;
 begin
   NumMacros := (Sender as TButton).Tag;
-  strtmp := StringReplace(Settings.Preset[Settings.NumListMacros].MacrosHelp[NumMacros], '[$0D$0A]', #13#10, [rfReplaceAll]);
+  strtmp := StringReplace(BytesToUTF8String(TBytes(Settings.Preset[Settings.NumListMacros].MacrosHelp[NumMacros].Str)), '[$0D$0A]', #13#10, [rfReplaceAll]);
   MHelp.Text     := strtmp;
   TimeOutClearHelp     := TIMEOUT_HELP;
   TmrClearHelp.Enabled := true;
@@ -1623,7 +1631,7 @@ begin
   if isModeListCmd then
     (Sender as TButton).Caption := 'Macros mode'
   else
-    (Sender as TButton).Caption := 'CmdList mode';
+    (Sender as TButton).Caption := 'Command List';
 
   if isErrFile then
     AddLogLine(GetDateTimeStr(now, Settings.Preset[Settings.NumListMacros].isDateInTimeStamp) + 'TerminalMLT: File open ERROR' , Settings.Preset[Settings.NumListMacros].ColorFont_SM, TStrInLog.TStrEv);
@@ -1738,12 +1746,12 @@ begin
     TOutMode.TOutAfterAns,
     TOutMode.TOutPeriod,
     TOutMode.TOutManual      : begin
-                                 EdtCli.Text := Settings.Preset[Settings.NumListMacros].MacrosCmd[num];
+                                 EdtCli.Text := Trim(BytesToUTF8String(TBytes(Settings.Preset[Settings.NumListMacros].MacrosCmd[num].Str)));
                                end;
     TOutMode.TOutClickMacros : begin
                                  if Port <> nil then
                                    begin
-                                     StrCmd  := Settings.Preset[Settings.NumListMacros].MacrosCmd[num];
+                                     StrCmd  := Trim(BytesToUTF8String(TBytes(Settings.Preset[Settings.NumListMacros].MacrosCmd[num].Str)));
                                      StrTail := EdtTail.Text;
                                      SendPacket(@Port, Settings.Connect, StrCmd, StrTail);
                                    end;
@@ -1821,7 +1829,7 @@ begin
   else if Settings.NameSettings <> SDef^.NameSettings then
     begin
       ItemCfg := SetStrParamCfg(0, Tag, Settings.NameSettings);
-      WriteLn(ConfigFile, ItemCfg);
+      WriteLn(ConfigFile, UTF8Encode(ItemCfg));
     end;
 
   //.............................................
@@ -1839,7 +1847,7 @@ begin
   else if Settings.NameFolderLog <> SDef^.NameFolderLog then
     begin
       ItemCfg := SetStrParamCfg(0, Tag, Settings.NameFolderLog);
-      WriteLn(ConfigFile, ItemCfg);
+      WriteLn(ConfigFile, UTF8Encode(ItemCfg));
     end;
 //.............................................
 
@@ -1858,7 +1866,7 @@ begin
     else if Settings.isEvTxtLog <> SDef^.isEvTxtLog then
       begin
         ItemCfg := SetStrParamCfg(0, Tag, BoolToString(Settings.isEvTxtLog));
-        WriteLn(ConfigFile, ItemCfg);
+        WriteLn(ConfigFile, UTF8Encode(ItemCfg));
       end;
 //.............................................
 
@@ -1876,7 +1884,7 @@ begin
   else if Settings.isAutoStartLogTxt <> SDef^.isAutoStartLogTxt then
     begin
       ItemCfg := SetStrParamCfg(0, Tag, BoolToString(Settings.isAutoStartLogTxt));
-      WriteLn(ConfigFile, ItemCfg);
+      WriteLn(ConfigFile, UTF8Encode(ItemCfg));
     end;
 //.............................................
 
@@ -1895,7 +1903,7 @@ begin
   else if Settings.isAutoStartLogBin <> SDef^.isAutoStartLogBin then
     begin
       ItemCfg := SetStrParamCfg(0, Tag, BoolToString(Settings.isAutoStartLogbin));
-      WriteLn(ConfigFile, ItemCfg);
+      WriteLn(ConfigFile, UTF8Encode(ItemCfg));
     end;
 //.............................................
 
@@ -1914,7 +1922,7 @@ begin
   else if Settings.isNewLogTxt <> SDef^.isNewLogTxt then
     begin
       ItemCfg := SetStrParamCfg(0, Tag, BoolToString(Settings.isNewLogTxt));
-      WriteLn(ConfigFile, ItemCfg);
+      WriteLn(ConfigFile, UTF8Encode(ItemCfg));
     end;
 //.............................................
 
@@ -1931,7 +1939,7 @@ begin
   else if Settings.isNewLogBin <> SDef^.isNewLogBin then
     begin
       ItemCfg := SetStrParamCfg(0, Tag, BoolToString(Settings.isNewLogBin));
-      WriteLn(ConfigFile, ItemCfg);
+      WriteLn(ConfigFile, UTF8Encode(ItemCfg));
     end;
 //.............................................
 
@@ -1949,7 +1957,7 @@ begin
   else if Settings.isRxTxtLog <> SDef^.isRxTxtLog then
     begin
       ItemCfg := SetStrParamCfg(0, Tag, BoolToString(Settings.isRxTxtLog));
-      WriteLn(ConfigFile, ItemCfg);
+      WriteLn(ConfigFile, UTF8Encode(ItemCfg));
     end;
 //.............................................
 
@@ -1967,7 +1975,7 @@ begin
   else if Settings.isTxTxtLog <> SDef^.isTxTxtLog then
     begin
       ItemCfg := SetStrParamCfg(0, Tag, BoolToString(Settings.isTxTxtLog));
-      WriteLn(ConfigFile, ItemCfg);
+      WriteLn(ConfigFile, UTF8Encode(ItemCfg));
     end;
 //.............................................
 
@@ -1985,7 +1993,7 @@ begin
   else if Settings.isRxBinLog <> SDef^.isRxBinLog then
     begin
       ItemCfg := SetStrParamCfg(0, Tag, BoolToString(Settings.isRxBinLog));
-      WriteLn(ConfigFile, ItemCfg);
+      WriteLn(ConfigFile, UTF8Encode(ItemCfg));
     end;
 //.............................................
 
@@ -2003,7 +2011,7 @@ begin
   else if Settings.isTxBinLog <> SDef^.isTxBinLog then
     begin
       ItemCfg := SetStrParamCfg(0, Tag, BoolToString(Settings.isTxBinLog));
-      WriteLn(ConfigFile, ItemCfg);
+      WriteLn(ConfigFile, UTF8Encode(ItemCfg));
     end;
 //.............................................
 
@@ -2021,7 +2029,7 @@ begin
   else if Settings.NameLogTxt <> SDef^.NameLogTxt then
     begin
       ItemCfg := SetStrParamCfg(0, Tag, Settings.NameLogTxt);
-      WriteLn(ConfigFile, ItemCfg);
+      WriteLn(ConfigFile, UTF8Encode(ItemCfg));
     end;
 //.............................................
 
@@ -2038,7 +2046,7 @@ begin
   else if Settings.NameLogBin <> SDef^.NameLogBin then
     begin
       ItemCfg := SetStrParamCfg(0, Tag, Settings.NameLogBin);
-      WriteLn(ConfigFile, ItemCfg);
+      WriteLn(ConfigFile, UTF8Encode(ItemCfg));
     end;
 //.............................................
 
@@ -2055,7 +2063,7 @@ begin
   else if Settings.PortName <> SDef^.PortName then
     begin
       ItemCfg := SetStrParamCfg(0, Tag, Settings.PortName);
-      WriteLn(ConfigFile, ItemCfg);
+      WriteLn(ConfigFile, UTF8Encode(ItemCfg));
     end;
 //.............................................
 
@@ -2072,7 +2080,7 @@ begin
   else if Settings.Connect <> SDef^.Connect then
     begin
        ItemCfg := SetStrParamCfg(0, Tag, IntToStr(Integer(Settings.Connect)));
-       WriteLn(ConfigFile, ItemCfg);
+       WriteLn(ConfigFile, UTF8Encode(ItemCfg));
     end;
 //.............................................
 
@@ -2090,7 +2098,7 @@ begin
   else if Settings.NumListMacros <> SDef^.NumListMacros then
     begin
        ItemCfg := SetStrParamCfg(0, Tag, IntToStr(Settings.NumListMacros));
-       WriteLn(ConfigFile, ItemCfg);
+       WriteLn(ConfigFile, UTF8Encode(ItemCfg));
     end;
 //.............................................
 
@@ -2107,7 +2115,7 @@ begin
   else if Settings.NumListMacros <> SDef^.DiagData.CntStart then
     begin
       ItemCfg := SetStrParamCfg(0, Tag, IntToStr(Settings.DiagData.CntStart));
-      WriteLn(ConfigFile, ItemCfg);
+      WriteLn(ConfigFile, UTF8Encode(ItemCfg));
     end;
 //.............................................
 
@@ -2124,7 +2132,7 @@ begin
   else if Settings.NumListMacros <> SDef^.DiagData.CntCloseOK then
     begin
       ItemCfg := SetStrParamCfg(0, Tag, IntToStr(Settings.DiagData.CntCloseOK));
-      WriteLn(ConfigFile, ItemCfg);
+      WriteLn(ConfigFile, UTF8Encode(ItemCfg));
     end;
 //.............................................
 
@@ -2147,7 +2155,7 @@ begin
       else if Settings.Preset[nList].IPPortC <> SDef^.Preset[nList].IPPortC then
         begin
           ItemCfg := SetStrParamCfg(0, Tag, IntToStr(Integer(Settings.Preset[nList].IPPortC)));
-          WriteLn(ConfigFile, ItemCfg);
+          WriteLn(ConfigFile, UTF8Encode(ItemCfg));
         end;
 
       Tag := VCFG + Format('%.3d', [nList]) + '_IPPortServer';
@@ -2163,7 +2171,7 @@ begin
       else if Settings.Preset[nList].IPPortS <> SDef^.Preset[nList].IPPortS then
         begin
           ItemCfg := SetStrParamCfg(0, Tag, IntToStr(Integer(Settings.Preset[nList].IPPortS)));
-          WriteLn(ConfigFile, ItemCfg);
+          WriteLn(ConfigFile, UTF8Encode(ItemCfg));
         end;
 
 
@@ -2180,7 +2188,7 @@ begin
       else if Settings.Preset[nList].IP_C <> SDef^.Preset[nList].IP_C then
         begin
           ItemCfg := SetStrParamCfg(0, Tag, Settings.Preset[nList].IP_C);
-          WriteLn(ConfigFile, ItemCfg);
+          WriteLn(ConfigFile, UTF8Encode(ItemCfg));
         end;
 
 
@@ -2197,7 +2205,7 @@ begin
       else if Settings.Preset[nList].IP_S <> SDef^.Preset[nList].IP_S then
         begin
           ItemCfg := SetStrParamCfg(0, Tag, Settings.Preset[nList].IP_S);
-          WriteLn(ConfigFile, ItemCfg);
+          WriteLn(ConfigFile, UTF8Encode(ItemCfg));
         end;
 
 
@@ -2214,7 +2222,7 @@ begin
       else if Settings.Preset[nList].OutLogMode <> SDef^.Preset[nList].OutLogMode then
         begin
           ItemCfg := SetStrParamCfg(0, Tag, IntToStr(Integer(Settings.Preset[nList].OutLogMode)));
-          WriteLn(ConfigFile, ItemCfg);
+          WriteLn(ConfigFile, UTF8Encode(ItemCfg));
         end;
 //.............................................
 
@@ -2231,7 +2239,7 @@ begin
       else if Settings.Preset[nList].isInsertEmptLine <> SDef^.Preset[nList].isInsertEmptLine then
         begin
           ItemCfg := SetStrParamCfg(0, Tag, BoolToString(Settings.Preset[nList].isInsertEmptLine));
-          WriteLn(ConfigFile, ItemCfg);
+          WriteLn(ConfigFile, UTF8Encode(ItemCfg));
         end;
 //.............................................
 
@@ -2249,7 +2257,7 @@ begin
       else if Settings.Preset[nList].isSkipReps <> SDef^.Preset[nList].isSkipReps then
         begin
           ItemCfg := SetStrParamCfg(0, Tag, BoolToString(Settings.Preset[nList].isSkipReps));
-          WriteLn(ConfigFile, ItemCfg);
+          WriteLn(ConfigFile, UTF8Encode(ItemCfg));
         end;
 //.............................................
 
@@ -2267,7 +2275,7 @@ begin
       else if Settings.Preset[nList].EmptyLine <> SDef^.Preset[nList].EmptyLine then
         begin
           ItemCfg := SetStrParamCfg(0, Tag, Settings.Preset[nList].EmptyLine);
-          WriteLn(ConfigFile, ItemCfg);
+          WriteLn(ConfigFile, UTF8Encode(ItemCfg));
         end;
       //.............................................
 
@@ -2286,7 +2294,7 @@ begin
         else if Settings.Preset[nList].isControlPauseRX <> SDef^.Preset[nList].isControlPauseRX then
           begin
             ItemCfg := SetStrParamCfg(0, Tag, BoolToString(Settings.Preset[nList].isControlPauseRX));
-            WriteLn(ConfigFile, ItemCfg);
+            WriteLn(ConfigFile, UTF8Encode(ItemCfg));
           end;
       //.............................................
 
@@ -2303,7 +2311,7 @@ begin
         else if Settings.Preset[nList].isAlarmConnectLost <> SDef^.Preset[nList].isAlarmConnectLost then
           begin
             ItemCfg := SetStrParamCfg(0, Tag, BoolToString(Settings.Preset[nList].isAlarmConnectLost));
-            WriteLn(ConfigFile, ItemCfg);
+            WriteLn(ConfigFile, UTF8Encode(ItemCfg));
           end;
       //.............................................
 
@@ -2326,7 +2334,7 @@ begin
         else if Settings.Preset[nList].ColorBG_ConnectLost <> SDef^.Preset[nList].ColorBG_ConnectLost then
           begin
             ItemCfg := SetStrParamCfg(0, Tag, '$' + IntToHex(Integer(Settings.Preset[nList].ColorBG_ConnectLost),8));
-            WriteLn(ConfigFile, ItemCfg);
+            WriteLn(ConfigFile, UTF8Encode(ItemCfg));
           end;
     //.............................................
 
@@ -2349,7 +2357,7 @@ begin
         else if Settings.Preset[nList].ColorPauseRX <> SDef^.Preset[nList].ColorPauseRX then
           begin
             ItemCfg := SetStrParamCfg(0, Tag, '$' + IntToHex(Integer(Settings.Preset[nList].ColorPauseRX),8));
-            WriteLn(ConfigFile, ItemCfg);
+            WriteLn(ConfigFile, UTF8Encode(ItemCfg));
           end;
       //.............................................
 
@@ -2365,7 +2373,7 @@ begin
         else if Settings.Preset[nList].PauseRXms <> SDef^.Preset[nList].PauseRXms then
           begin
             ItemCfg := SetStrParamCfg(0, Tag, IntToStr(Settings.Preset[nList].PauseRXms));
-            WriteLn(ConfigFile, ItemCfg);
+            WriteLn(ConfigFile, UTF8Encode(ItemCfg));
           end;
       //.............................................
 
@@ -2384,7 +2392,7 @@ begin
         else if Settings.Preset[nList].IsClearLogEnter <> SDef^.Preset[nList].IsClearLogEnter then
           begin
             ItemCfg := SetStrParamCfg(0, Tag, BoolToString(Settings.Preset[nList].IsClearLogEnter));
-            WriteLn(ConfigFile, ItemCfg);
+            WriteLn(ConfigFile, UTF8Encode(ItemCfg));
           end;
       //.............................................
 
@@ -2407,7 +2415,7 @@ begin
         else if Settings.Preset[nList].ColorFont_SM <> SDef^.Preset[nList].ColorFont_SM then
           begin
             ItemCfg := SetStrParamCfg(0, Tag, '$' + IntToHex(Integer(Settings.Preset[nList].ColorFont_SM),8));
-            WriteLn(ConfigFile, ItemCfg);
+            WriteLn(ConfigFile, UTF8Encode(ItemCfg));
           end;
         //.............................................
 
@@ -2430,7 +2438,7 @@ begin
         else if Settings.Preset[nList].ColorFont_EL <> SDef^.Preset[nList].ColorFont_EL then
           begin
             ItemCfg := SetStrParamCfg(0, Tag, '$' + IntToHex(Integer(Settings.Preset[nList].ColorFont_EL),8));
-            WriteLn(ConfigFile, ItemCfg);
+            WriteLn(ConfigFile, UTF8Encode(ItemCfg));
           end;
       //.............................................
 
@@ -2453,7 +2461,7 @@ begin
         else if Settings.Preset[nList].ColorFont_RC <> SDef^.Preset[nList].ColorFont_RC then
           begin
             ItemCfg := SetStrParamCfg(0, Tag, '$' + IntToHex(Integer(Settings.Preset[nList].ColorFont_RC),8));
-            WriteLn(ConfigFile, ItemCfg);
+            WriteLn(ConfigFile, UTF8Encode(ItemCfg));
           end;
         //.............................................
 
@@ -2475,7 +2483,7 @@ begin
         else if Settings.Preset[nList].ColorFont_RU <> SDef^.Preset[nList].ColorFont_RU then
           begin
             ItemCfg := SetStrParamCfg(0, Tag, '$' + IntToHex(Integer(Settings.Preset[nList].ColorFont_RU),8));
-            WriteLn(ConfigFile, ItemCfg);
+            WriteLn(ConfigFile, UTF8Encode(ItemCfg));
           end;
         //.............................................
 
@@ -2498,7 +2506,7 @@ begin
         else if Settings.Preset[nList].ColorFont_RD <> SDef^.Preset[nList].ColorFont_RD then
           begin
             ItemCfg := SetStrParamCfg(0, Tag, '$' + IntToHex(Integer(Settings.Preset[nList].ColorFont_RD),8));
-            WriteLn(ConfigFile, ItemCfg);
+            WriteLn(ConfigFile, UTF8Encode(ItemCfg));
           end;
         //.............................................
 
@@ -2521,7 +2529,7 @@ begin
         else if Settings.Preset[nList].ColorFont_RH <> SDef^.Preset[nList].ColorFont_RH then
           begin
             ItemCfg := SetStrParamCfg(0, Tag, '$' + IntToHex(Integer(Settings.Preset[nList].ColorFont_RH),8));
-            WriteLn(ConfigFile, ItemCfg);
+            WriteLn(ConfigFile, UTF8Encode(ItemCfg));
           end;
         //.............................................
 
@@ -2544,7 +2552,7 @@ begin
         else if Settings.Preset[nList].ColorFont_RA <> SDef^.Preset[nList].ColorFont_RA then
           begin
             ItemCfg := SetStrParamCfg(0, Tag, '$' + IntToHex(Integer(Settings.Preset[nList].ColorFont_RA),8));
-            WriteLn(ConfigFile, ItemCfg);
+            WriteLn(ConfigFile, UTF8Encode(ItemCfg));
           end;
         //.............................................
 
@@ -2567,7 +2575,7 @@ begin
         else if Settings.Preset[nList].ColorFont_Send <> SDef^.Preset[nList].ColorFont_Send then
           begin
             ItemCfg := SetStrParamCfg(0, Tag, '$' + IntToHex(Integer(Settings.Preset[nList].ColorFont_Send),8));
-            WriteLn(ConfigFile, ItemCfg);
+            WriteLn(ConfigFile, UTF8Encode(ItemCfg));
           end;
         //.............................................
 
@@ -2591,7 +2599,7 @@ begin
         else if Settings.Preset[nList].ColorFont_TXT <> SDef^.Preset[nList].ColorFont_TXT then
           begin
             ItemCfg := SetStrParamCfg(0, Tag, '$' + IntToHex(Integer(Settings.Preset[nList].ColorFont_TXT),8));
-            WriteLn(ConfigFile, ItemCfg);
+            WriteLn(ConfigFile, UTF8Encode(ItemCfg));
           end;
         //.............................................
 
@@ -2614,7 +2622,7 @@ begin
         else if Settings.Preset[nList].ColorBG_PAUSE_TXT <> SDef^.Preset[nList].ColorBG_PAUSE_TXT then
           begin
             ItemCfg := SetStrParamCfg(0, Tag, '$' + IntToHex(Integer(Settings.Preset[nList].ColorBG_PAUSE_TXT),8));
-            WriteLn(ConfigFile, ItemCfg);
+            WriteLn(ConfigFile, UTF8Encode(ItemCfg));
           end;
         //.............................................
 
@@ -2636,7 +2644,7 @@ begin
         else if Settings.Preset[nList].ColorBG_PAUSE_RTF <> SDef^.Preset[nList].ColorBG_PAUSE_RTF then
           begin
             ItemCfg := SetStrParamCfg(0, Tag, '$' + IntToHex(Integer(Settings.Preset[nList].ColorBG_PAUSE_RTF),8));
-            WriteLn(ConfigFile, ItemCfg);
+            WriteLn(ConfigFile, UTF8Encode(ItemCfg));
           end;
         //.............................................
 
@@ -2659,7 +2667,7 @@ begin
         else if Settings.Preset[nList].ColorBG_RTF <> SDef^.Preset[nList].ColorBG_RTF then
           begin
             ItemCfg := SetStrParamCfg(0, Tag, '$' + IntToHex(Integer(Settings.Preset[nList].ColorBG_RTF),8));
-            WriteLn(ConfigFile, ItemCfg);
+            WriteLn(ConfigFile, UTF8Encode(ItemCfg));
           end;
         //.............................................
 
@@ -2682,7 +2690,7 @@ begin
         else if Settings.Preset[nList].ColorBG_TXT <> SDef^.Preset[nList].ColorBG_TXT then
           begin
             ItemCfg := SetStrParamCfg(0, Tag, '$' + IntToHex(Integer(Settings.Preset[nList].ColorBG_TXT),8));
-            WriteLn(ConfigFile, ItemCfg);
+            WriteLn(ConfigFile, UTF8Encode(ItemCfg));
           end;
         //.............................................
 
@@ -2700,7 +2708,7 @@ begin
         else if Settings.Preset[nList].BaudRate <> SDef^.Preset[nList].BaudRate then
           begin
             ItemCfg := SetStrParamCfg(0, Tag, IntToStr(Settings.Preset[nList].BaudRate));
-            WriteLn(ConfigFile, ItemCfg);
+            WriteLn(ConfigFile, UTF8Encode(ItemCfg));
           end;
       //.............................................
         for i := 10 to MAX_CNT_BAUDRATES - 1 do
@@ -2718,7 +2726,7 @@ begin
             else if Settings.Preset[nList].BaudRateS[i] <> SDef^.Preset[nList].BaudRateS[i] then
               begin
                 ItemCfg := SetStrParamCfg(5, Tag, IntToStr(Settings.Preset[nList].BaudRateS[i]));
-                WriteLn(ConfigFile, ItemCfg);
+                WriteLn(ConfigFile, UTF8Encode(ItemCfg));
               end;
           end;
       //.............................................
@@ -2740,7 +2748,7 @@ begin
         else if Settings.Preset[nList].MaxLenLog <> SDef^.Preset[nList].MaxLenLog then
           begin
             ItemCfg := SetStrParamCfg(0, Tag, IntToStr(Settings.Preset[nList].MaxLenLog));
-            WriteLn(ConfigFile, ItemCfg);
+            WriteLn(ConfigFile, UTF8Encode(ItemCfg));
           end;
       //.............................................
 
@@ -2757,7 +2765,7 @@ begin
         else if Settings.Preset[nList].bits <> SDef^.Preset[nList].bits then
           begin
             ItemCfg := SetStrParamCfg(0, Tag, IntToStr(Settings.Preset[nList].bits));
-            WriteLn(ConfigFile, ItemCfg);
+            WriteLn(ConfigFile, UTF8Encode(ItemCfg));
           end;
       //.............................................
 
@@ -2776,7 +2784,7 @@ begin
         else if Settings.Preset[nList].Parity <> SDef^.Preset[nList].Parity  then
           begin
             ItemCfg := SetStrParamCfg(0, Tag, IntToStr(byte(Settings.Preset[nList].Parity)));
-            WriteLn(ConfigFile, ItemCfg);
+            WriteLn(ConfigFile, UTF8Encode(ItemCfg));
           end;
         //.............................................
 
@@ -2794,7 +2802,7 @@ begin
         else if Settings.Preset[nList].StopBits <> SDef^.Preset[nList].StopBits then
           begin
             ItemCfg := SetStrParamCfg(0, Tag, IntToStr(Integer(Settings.Preset[nList].StopBits)));
-            WriteLn(ConfigFile, ItemCfg);
+            WriteLn(ConfigFile, UTF8Encode(ItemCfg));
           end;
         //.............................................
 
@@ -2811,7 +2819,7 @@ begin
         else if Settings.Preset[nList].ReadMode <> SDef^.Preset[nList].ReadMode then
           begin
             ItemCfg := SetStrParamCfg(0, Tag, IntToStr(Integer(Settings.Preset[nList].ReadMode)));
-            WriteLn(ConfigFile, ItemCfg);
+            WriteLn(ConfigFile, UTF8Encode(ItemCfg));
           end;
         //.............................................
 
@@ -2828,7 +2836,7 @@ begin
         else if Settings.Preset[nList].softflow <> SDef^.Preset[nList].softflow then
           begin
             ItemCfg := SetStrParamCfg(0, Tag, BoolToString(Settings.Preset[nList].softflow));
-            WriteLn(ConfigFile, ItemCfg);
+            WriteLn(ConfigFile, UTF8Encode(ItemCfg));
           end;
         //.............................................
 
@@ -2845,7 +2853,7 @@ begin
         else if Settings.Preset[nList].hardflow <> SDef^.Preset[nList].hardflow then
           begin
             ItemCfg := SetStrParamCfg(0, Tag, BoolToString(Settings.Preset[nList].hardflow));
-            WriteLn(ConfigFile, ItemCfg);
+            WriteLn(ConfigFile, UTF8Encode(ItemCfg));
           end;
         //.............................................
 
@@ -2862,7 +2870,7 @@ begin
         else if Settings.Preset[nList].isAutoConnect <> SDef^.Preset[nList].isAutoConnect then
           begin
              ItemCfg := SetStrParamCfg(0, Tag, BoolToString(Settings.Preset[nList].isAutoConnect));
-             WriteLn(ConfigFile, ItemCfg);
+             WriteLn(ConfigFile, UTF8Encode(ItemCfg));
           end;
       //............................................
 
@@ -2883,7 +2891,7 @@ begin
       else if Settings.Preset[nList].NameMacrosList <> SDef^.Preset[nList].NameMacrosList then
         begin
           ItemCfg := SetStrParamCfg(0, Tag, Settings.Preset[nList].NameMacrosList);
-          WriteLn(ConfigFile, ItemCfg);
+          WriteLn(ConfigFile, UTF8Encode(ItemCfg));
         end;
 
       for i := 0 to MAX_CNT_LAST_CMD - 1 do
@@ -2902,7 +2910,7 @@ begin
           else if not CompareMem(@Settings.Preset[nList].LastCmdList[i].Str[0], @SDef^.Preset[nList].LastCmdList[i].Str[0], LEN_CMD_STR) then
             begin
               ItemCfg := SetStrParamCfg(0, Tag, Trim(BytesToUTF8String(TBytes(Settings.Preset[nList].LastCmdList[i].Str))));
-              WriteLn(ConfigFile, ItemCfg);
+              WriteLn(ConfigFile, UTF8Encode(ItemCfg));
             end;
         end;
 
@@ -2921,9 +2929,9 @@ begin
           else if Settings.Preset[nList].ItCustDecode[i].StrDecode <> SDef^.Preset[nList].ItCustDecode[i].StrDecode then
             begin
               ItemCfg := SetStrParamCfg(0, Tag, Settings.Preset[nList].ItCustDecode[i].StrDecode);
-              WriteLn(ConfigFile, ItemCfg);
+              WriteLn(ConfigFile, UTF8Encode(ItemCfg));
             end;
-      //.............................................
+      //...........................UTF8Encode(ItemCfg)..................
         end;
 
 
@@ -2935,15 +2943,16 @@ begin
             begin
               if (Pos(Tag, StrCfg) > 0) and not isOK then
                 begin
-                  Settings.Preset[nList].MacrosName[nMacros] := Trim(GetTagValue(StrCfg, Tag));
+                  FillChar(Settings.Preset[nList].MacrosName[nMacros].Str, LEN_CMD_STR, $00);
+                  StringToUTF8Bytes(Trim(GetTagValue(StrCfg, Tag)), @Settings.Preset[nList].MacrosName[nMacros].Str[0]);
                   isOK := true;
                   Exit;
                 end;
             end
-          else if Settings.Preset[nList].MacrosName[nMacros] <> SDef^.Preset[nList].MacrosName[nMacros] then
+          else if not CompareMem(@Settings.Preset[nList].MacrosName[nMacros].Str[0], @SDef^.Preset[nList].MacrosName[nMacros].Str[0], LEN_MACROS_STR) then
             begin
-              ItemCfg := SetStrParamCfg(1, Tag, Settings.Preset[nList].MacrosName[nMacros]);
-              WriteLn(ConfigFile, ItemCfg);
+              ItemCfg := SetStrParamCfg(1, Tag, Trim(BytesToUTF8String(Tbytes(Settings.Preset[nList].MacrosName[nMacros].Str))));
+              WriteLn(ConfigFile, UTF8Encode(ItemCfg));
             end;
 
 
@@ -2952,15 +2961,16 @@ begin
             begin
               if (Pos(Tag, StrCfg) > 0) and not isOK then
                 begin
-                  Settings.Preset[nList].MacrosCmd[nMacros] := GetTagValue(StrCfg, Tag);
+                  FillChar(Settings.Preset[nList].MacrosCmd[nMacros].Str, LEN_CMD_STR, $00);
+                  StringToUTF8Bytes(Trim(GetTagValue(StrCfg, Tag)), @Settings.Preset[nList].MacrosCmd[nMacros].Str[0]);
                   isOK := true;
                   Exit;
                 end;
             end
-          else if Settings.Preset[nList].MacrosCmd[nMacros] <> SDef^.Preset[nList].MacrosCmd[nMacros] then
+          else if not CompareMem(@Settings.Preset[nList].MacrosCmd[nMacros].Str[0], @SDef^.Preset[nList].MacrosCmd[nMacros].Str[0], LEN_MACROS_STR) then
             begin
-              ItemCfg := SetStrParamCfg(2, Tag, Settings.Preset[nList].MacrosCmd[nMacros]);
-              WriteLn(ConfigFile, ItemCfg);
+              ItemCfg := SetStrParamCfg(1, Tag, Trim(BytesToUTF8String(Tbytes(Settings.Preset[nList].MacrosCmd[nMacros].Str))));
+              WriteLn(ConfigFile, UTF8Encode(ItemCfg));
             end;
 
           Tag := VCFG + Format('%.3d', [nList]) + '_MacrosHelp' + Format('%.3d', [nMacros]);
@@ -2968,15 +2978,16 @@ begin
             begin
               if (Pos(Tag, StrCfg) > 0) and not isOK then
                 begin
-                  Settings.Preset[nList].MacrosHelp[nMacros] := GetTagValue(StrCfg, Tag);
+                  FillChar(Settings.Preset[nList].MacrosHelp[nMacros].Str, LEN_CMD_STR, $00);
+                  StringToUTF8Bytes(Trim(GetTagValue(StrCfg, Tag)), @Settings.Preset[nList].MacrosHelp[nMacros].Str[0]);
                   isOK := true;
                   Exit;
                 end;
             end
-          else if Settings.Preset[nList].MacrosHelp[nMacros] <> SDef^.Preset[nList].MacrosHelp[nMacros] then
+          else if not CompareMem(@Settings.Preset[nList].MacrosHelp[nMacros].Str[0], @SDef^.Preset[nList].MacrosHelp[nMacros].Str[0], LEN_MACROS_STR) then
             begin
-              ItemCfg := SetStrParamCfg(3, Tag, Settings.Preset[nList].MacrosHelp[nMacros]);
-              WriteLn(ConfigFile, ItemCfg);
+              ItemCfg := SetStrParamCfg(1, Tag, Trim(BytesToUTF8String(Tbytes(Settings.Preset[nList].MacrosHelp[nMacros].Str))));
+              WriteLn(ConfigFile, UTF8Encode(ItemCfg));
             end;
         end;
 
@@ -2993,7 +3004,7 @@ begin
               else if Settings.Preset[nList].isShowCnt <> SDef^.Preset[nList].isShowCnt then
                 begin
                   ItemCfg := SetStrParamCfg(0, Tag, BoolToString(Settings.Preset[nList].isShowCnt));
-                  WriteLn(ConfigFile, ItemCfg);
+                  WriteLn(ConfigFile, UTF8Encode(ItemCfg));
                 end;
              //.............................................
 
@@ -3010,7 +3021,7 @@ begin
             else if Settings.Preset[nList].isShowPort <> SDef^.Preset[nList].isShowPort then
               begin
                 ItemCfg := SetStrParamCfg(0, Tag, BoolToString(Settings.Preset[nList].isShowPort));
-                WriteLn(ConfigFile, ItemCfg);
+                WriteLn(ConfigFile, UTF8Encode(ItemCfg));
               end;
             //.............................................
 
@@ -3027,7 +3038,7 @@ begin
             else if Settings.Preset[nList].isShowDir <> SDef^.Preset[nList].isShowDir then
               begin
                 ItemCfg := SetStrParamCfg(0, Tag, BoolToString(Settings.Preset[nList].isShowDir));
-                WriteLn(ConfigFile, ItemCfg);
+                WriteLn(ConfigFile, UTF8Encode(ItemCfg));
               end;
             //.............................................
 
@@ -3044,7 +3055,7 @@ begin
             else if Settings.Preset[nList].isShowMode <> SDef^.Preset[nList].isShowMode then
               begin
                 ItemCfg := SetStrParamCfg(0, Tag, BoolToString(Settings.Preset[nList].isShowMode));
-                WriteLn(ConfigFile, ItemCfg);
+                WriteLn(ConfigFile, UTF8Encode(ItemCfg));
               end;
            //.............................................
 
@@ -3061,7 +3072,7 @@ begin
             else if Settings.Preset[nList].isDateInTimeStamp <> SDef^.Preset[nList].isDateInTimeStamp then
               begin
                 ItemCfg := SetStrParamCfg(0, Tag, BoolToString(Settings.Preset[nList].isDateInTimeStamp));
-                WriteLn(ConfigFile, ItemCfg);
+                WriteLn(ConfigFile, UTF8Encode(ItemCfg));
               end;
            //.............................................
 
@@ -3078,7 +3089,7 @@ begin
             else if Settings.Preset[nList].isNonPrintASCII <> SDef^.Preset[nList].isNonPrintASCII then
               begin
                 ItemCfg := SetStrParamCfg(0, Tag, BoolToString(Settings.Preset[nList].isNonPrintASCII));
-                WriteLn(ConfigFile, ItemCfg);
+                WriteLn(ConfigFile, UTF8Encode(ItemCfg));
               end;
            //.............................................
 
@@ -3098,7 +3109,7 @@ begin
             else if Settings.Preset[nList].isShowTime <> SDef^.Preset[nList].isShowTime then
               begin
                 ItemCfg := SetStrParamCfg(0, Tag, BoolToString(Settings.Preset[nList].isShowTime));
-                WriteLn(ConfigFile, ItemCfg);
+                WriteLn(ConfigFile, UTF8Encode(ItemCfg));
               end;
            //.............................................
 
@@ -3117,7 +3128,7 @@ begin
             else if Settings.Preset[nList].OutMode <> SDef^.Preset[nList].OutMode then
               begin
                 ItemCfg := SetStrParamCfg(0, Tag, IntToStr(Integer(Settings.Preset[nList].OutMode)));
-                WriteLn(ConfigFile, ItemCfg);
+                WriteLn(ConfigFile, UTF8Encode(ItemCfg));
               end;
 //.............................................
 
@@ -3134,7 +3145,7 @@ begin
             else if Settings.Preset[nList].PeriodSend <> SDef^.Preset[nList].PeriodSend then
               begin
                 ItemCfg := SetStrParamCfg(0, Tag, IntToStr(Settings.Preset[nList].PeriodSend));
-                WriteLn(ConfigFile, ItemCfg);
+                WriteLn(ConfigFile, UTF8Encode(ItemCfg));
               end;
 
 
@@ -3151,7 +3162,7 @@ begin
             else if Settings.Preset[nList].ShowHelpMode <> SDef^.Preset[nList].ShowHelpMode then
               begin
                 ItemCfg := SetStrParamCfg(0, Tag, IntToStr(Integer(Settings.Preset[nList].ShowHelpMode)));
-                WriteLn(ConfigFile, ItemCfg);
+                WriteLn(ConfigFile, UTF8Encode(ItemCfg));
               end;
 //.............................................
 
@@ -3168,7 +3179,7 @@ begin
             else if Settings.Preset[nList].DecodeMode <> SDef^.Preset[nList].DecodeMode then
               begin
                 ItemCfg := SetStrParamCfg(0, Tag, IntToStr(Integer(Settings.Preset[nList].DecodeMode)));
-                WriteLn(ConfigFile, ItemCfg);
+                WriteLn(ConfigFile, UTF8Encode(ItemCfg));
               end;
 //.............................................
             Tag := VCFG + Format('%.3d', [nList]) + '_FilterSubString';
@@ -3184,7 +3195,7 @@ begin
             else if Settings.Preset[nList].FilterStr <> SDef^.Preset[nList].FilterStr then
               begin
                 ItemCfg := SetStrParamCfg(0, Tag, Settings.Preset[nList].FilterStr);
-                WriteLn(ConfigFile, ItemCfg);
+                WriteLn(ConfigFile, UTF8Encode(ItemCfg));
               end;
   //.............................................
 
@@ -3201,7 +3212,7 @@ begin
               else if not CompareMem(@Settings.Preset[nList].CmdStr.Str[0], @SDef^.Preset[nList].CmdStr.Str[0], LEN_CMD_STR) then
                 begin
                   ItemCfg := SetStrParamCfg(0, Tag, Trim(BytesToUTF8String(TBytes(Settings.Preset[nList].CmdStr.Str))));
-                  WriteLn(ConfigFile, ItemCfg);
+                  WriteLn(ConfigFile, UTF8Encode(ItemCfg));
                 end;
   //.............................................
 
@@ -3218,7 +3229,7 @@ begin
             else if Settings.Preset[nList].TailStr <> SDef^.Preset[nList].TailStr then
               begin
                 ItemCfg := SetStrParamCfg(0, Tag, Settings.Preset[nList].TailStr);
-                WriteLn(ConfigFile, ItemCfg);
+                WriteLn(ConfigFile, UTF8Encode(ItemCfg));
               end;
   //.............................................
 
@@ -3236,7 +3247,7 @@ begin
             else if Settings.Preset[nList].CondFilter <> SDef^.Preset[nList].CondFilter then
               begin
                 ItemCfg :=  SetStrParamCfg(0, Tag, IntToStr(Integer(Settings.Preset[nList].CondFilter)));
-                WriteLn(ConfigFile, ItemCfg);
+                WriteLn(ConfigFile, UTF8Encode(ItemCfg));
               end;
   //.............................................
 
@@ -3254,7 +3265,7 @@ begin
             else if Settings.Preset[nList].FontSizeLog <> SDef^.Preset[nList].FontSizeLog then
               begin
                 ItemCfg := SetStrParamCfg(0, Tag, IntToStr(Settings.Preset[nList].FontSizeLog));
-                WriteLn(ConfigFile, ItemCfg);
+                WriteLn(ConfigFile, UTF8Encode(ItemCfg));
               end;
 //.............................................
 
@@ -3273,7 +3284,7 @@ begin
             else if Settings.Preset[nList].CondOut.isCntByte <> SDef^.Preset[nList].CondOut.isCntByte then
               begin
                 ItemCfg := SetStrParamCfg(0, Tag, BoolToString(Settings.Preset[nList].CondOut.isCntByte));
-                WriteLn(ConfigFile, ItemCfg);
+                WriteLn(ConfigFile, UTF8Encode(ItemCfg));
               end;
 
             Tag := VCFG + Format('%.3d', [nList]) + '_CondOutIsPauseMs';
@@ -3289,7 +3300,7 @@ begin
             else if Settings.Preset[nList].CondOut.isTimeOut <> SDef^.Preset[nList].CondOut.isTimeOut then
               begin
                 ItemCfg := SetStrParamCfg(0, Tag, BoolToString(Settings.Preset[nList].CondOut.isTimeOut));
-                WriteLn(ConfigFile, ItemCfg);
+                WriteLn(ConfigFile, UTF8Encode(ItemCfg));
               end;
             //.............................................
 
@@ -3306,7 +3317,7 @@ begin
             else if Settings.Preset[nList].CondOut.CntByte <> SDef^.Preset[nList].CondOut.CntByte then
               begin
                 ItemCfg := SetStrParamCfg(0, Tag, IntToStr(Settings.Preset[nList].CondOut.CntByte));
-                WriteLn(ConfigFile, ItemCfg);
+                WriteLn(ConfigFile, UTF8Encode(ItemCfg));
               end;
 
             Tag := VCFG + Format('%.3d', [nList]) + '_CondOutTimeOut';
@@ -3322,7 +3333,7 @@ begin
             else if Settings.Preset[nList].CondOut.TimeOut <> SDef^.Preset[nList].CondOut.TimeOut then
               begin
                 ItemCfg := SetStrParamCfg(0, Tag, IntToStr(Settings.Preset[nList].CondOut.TimeOut));
-                WriteLn(ConfigFile, ItemCfg);
+                WriteLn(ConfigFile, UTF8Encode(ItemCfg));
               end;
 
                 //.............................................
@@ -3341,7 +3352,7 @@ begin
               else if Settings.Preset[nList].CondOut.isAfter[i] <> SDef^.Preset[nList].CondOut.isAfter[i] then
                 begin
                   ItemCfg := SetStrParamCfg(0, Tag, BoolToString(Settings.Preset[nList].CondOut.isAfter[i]));
-                  WriteLn(ConfigFile, ItemCfg);
+                  WriteLn(ConfigFile, UTF8Encode(ItemCfg));
                 end;
 
               for j := 0 to CNT_BYTE_SEP - 1 do
@@ -3359,7 +3370,7 @@ begin
                   else if Settings.Preset[nList].CondOut.buf_after[i, j] <> SDef^.Preset[nList].CondOut.buf_after[i, j] then
                     begin
                       ItemCfg := SetStrParamCfg(2, Tag, IntToStr(Settings.Preset[nList].CondOut.buf_after[i, j]));
-                      WriteLn(ConfigFile, ItemCfg);
+                      WriteLn(ConfigFile, UTF8Encode(ItemCfg));
                     end;
                 end;
               end;
@@ -3379,7 +3390,7 @@ begin
                 else if Settings.Preset[nList].CondOut.isBefore[i] <> SDef^.Preset[nList].CondOut.isBefore[i] then
                   begin
                     ItemCfg := SetStrParamCfg(0, Tag, BoolToString(Settings.Preset[nList].CondOut.isBefore[i]));
-                    WriteLn(ConfigFile, ItemCfg);
+                    WriteLn(ConfigFile, UTF8Encode(ItemCfg));
                   end;
 
 
@@ -3398,7 +3409,7 @@ begin
                     else if Settings.Preset[nList].CondOut.buf_before[i, j] <> SDef^.Preset[nList].CondOut.buf_before[i, j] then
                       begin
                         ItemCfg := SetStrParamCfg(2, Tag, IntToStr(Settings.Preset[nList].CondOut.buf_before[i, j]));
-                        WriteLn(ConfigFile, ItemCfg);
+                        WriteLn(ConfigFile, UTF8Encode(ItemCfg));
                       end;
                   end;
               end;
@@ -3567,9 +3578,12 @@ begin
 
       for j := 1 to CNT_MACROS do
         begin
-          Sett^.Preset[nList].MacrosCmd[j] := '';
-          Sett^.Preset[nList].MacrosName[j] := '';
-          Sett^.Preset[nList].MacrosHelp[j] := '';
+          FillChar(Sett^.Preset[nList].MacrosCmd[j].Str, LEN_MACROS_STR, $00);
+          //Sett^.Preset[nList].MacrosCmd[j] := '';
+          FillChar(Sett^.Preset[nList].MacrosName[j].Str, LEN_MACROS_STR, $00);
+          //Sett^.Preset[nList].MacrosName[j] := '';
+          FillChar(Sett^.Preset[nList].MacrosHelp[j].Str, LEN_MACROS_STR, $00);
+          //Sett^.Preset[nList].MacrosHelp[j] := '';
         end;
 
       Sett^.Preset[nList].NameMacrosList := 'Presets ' + IntToStr(nList);
@@ -3735,7 +3749,7 @@ var
 begin
   EdtMacros[NumCurMacros].Color:= clWindow;
   NumCurMacros := (Sender as TEdit).Tag;
-  strtmp := StringReplace(Settings.Preset[Settings.NumListMacros].MacrosHelp[NumCurMacros], '[$0D$0A]', #13#10, [rfReplaceAll]);
+  strtmp := StringReplace(BytesToUTF8String(TBytes(Settings.Preset[Settings.NumListMacros].MacrosHelp[NumCurMacros].Str)), '[$0D$0A]', #13#10, [rfReplaceAll]);
   MHelp.Text     := strtmp;
   MHelpEdit.Text := strtmp;
 end;
@@ -3857,9 +3871,15 @@ begin
   nMacros := (Sender as TEdit).Tag;
 
   if ModeMacros = MM_Name then
-    Settings.Preset[Settings.NumListMacros].MacrosName[nMacros] := (Sender as TEdit).Text
+    begin
+      FillChar(Settings.Preset[Settings.NumListMacros].MacrosName[nMacros].Str, LEN_MACROS_STR, $00);
+      StringToUTF8Bytes((Sender as TEdit).Text, @Settings.Preset[Settings.NumListMacros].MacrosName[nMacros].Str[0]);
+    end
   else if ModeMacros = MM_Command then
-    Settings.Preset[Settings.NumListMacros].MacrosCmd[nMacros] := (Sender as TEdit).Text;
+    begin
+      FillChar(Settings.Preset[Settings.NumListMacros].MacrosCmd[nMacros].Str, LEN_MACROS_STR, $00);
+      StringToUTF8Bytes((Sender as TEdit).Text, @Settings.Preset[Settings.NumListMacros].MacrosCmd[nMacros].Str[0]);
+    end;
 end;
 
 procedure TFormMain.EdtNameListChange(Sender: TObject);
@@ -3875,22 +3895,22 @@ begin
     begin
     if ModeMacros = MM_Name then
       begin
-        BtnMacros[nMacros].Caption := Settings.Preset[Settings.NumListMacros].MacrosName[nMacros];
-        EdtMacros[nMacros].Text    := Settings.Preset[Settings.NumListMacros].MacrosName[nMacros];
+        BtnMacros[nMacros].Caption := Trim(BytesToUTF8String(TBytes(Settings.Preset[Settings.NumListMacros].MacrosName[nMacros].Str)));
+        EdtMacros[nMacros].Text    := Trim(BytesToUTF8String(TBytes(Settings.Preset[Settings.NumListMacros].MacrosName[nMacros].Str)));
 
-        EdtMacros[nMacros].Hint    := Settings.Preset[Settings.NumListMacros].MacrosCmd[nMacros];
-        BtnMacros[nMacros].Hint    := Settings.Preset[Settings.NumListMacros].MacrosCmd[nMacros];
+        EdtMacros[nMacros].Hint    := Trim(BytesToUTF8String(TBytes(Settings.Preset[Settings.NumListMacros].MacrosCmd[nMacros].Str)));
+        BtnMacros[nMacros].Hint    := Trim(BytesToUTF8String(TBytes(Settings.Preset[Settings.NumListMacros].MacrosCmd[nMacros].Str)));
 
         EdtMacros[nMacros].Font.Bold := true;
         BtnMacros[nMacros].Font.Bold := true;
       end
     else if ModeMacros = MM_Command then
       begin
-        BtnMacros[nMacros].Caption := Settings.Preset[Settings.NumListMacros].MacrosCmd[nMacros];
-        EdtMacros[nMacros].Text    := Settings.Preset[Settings.NumListMacros].MacrosCmd[nMacros];
+        BtnMacros[nMacros].Caption := Trim(BytesToUTF8String(TBytes(Settings.Preset[Settings.NumListMacros].MacrosCmd[nMacros].Str)));
+        EdtMacros[nMacros].Text    := Trim(BytesToUTF8String(TBytes(Settings.Preset[Settings.NumListMacros].MacrosCmd[nMacros].Str)));
 
-        EdtMacros[nMacros].Hint    := Settings.Preset[Settings.NumListMacros].MacrosName[nMacros];
-        BtnMacros[nMacros].Hint    := Settings.Preset[Settings.NumListMacros].MacrosName[nMacros];
+        EdtMacros[nMacros].Hint    := Trim(BytesToUTF8String(TBytes(Settings.Preset[Settings.NumListMacros].MacrosName[nMacros].Str)));
+        BtnMacros[nMacros].Hint    := Trim(BytesToUTF8String(TBytes(Settings.Preset[Settings.NumListMacros].MacrosName[nMacros].Str)));
 
         EdtMacros[nMacros].Font.Bold := false;
         BtnMacros[nMacros].Font.Bold := false;
@@ -4718,11 +4738,11 @@ begin
               Settings.Preset[i].FilterStr      := PresetTMB[i].FiltrStr[1];
               Settings.Preset[i].IsClearLogEnter:= PresetTMB[i].isClrLogWhSend;
               Settings.Preset[i].NameMacrosList := PresetTMB[i].NameList;
-              for j := 1 to 48 do
-                begin
-                  Settings.Preset[i].MacrosName[j] := PresetTMB[i].CmdName[j];
-                  Settings.Preset[i].MacrosCmd[j]  := PresetTMB[i].CmdData[j];
-                end;
+              //for j := 1 to 48 do
+              //  begin
+              //    Settings.Preset[i].MacrosName[j] := PresetTMB[i].CmdName[j];
+              //    Settings.Preset[i].MacrosCmd[j]  := PresetTMB[i].CmdData[j];
+              //  end;
             end;
           UpdateGUI;
         end;
@@ -4807,7 +4827,7 @@ end;
 procedure TFormMain.MHelpEditChange(Sender: TObject);
 begin
   if (NumCurMacros > 0) and not isModeEditMacros then
-    Settings.Preset[Settings.NumListMacros].MacrosHelp[NumCurMacros] := StringReplace((Sender as TMemo).Text, #13#10, '[$0D$0A]', [rfReplaceAll]);
+    StringToUTF8Bytes(StringReplace((Sender as TMemo).Text, #13#10, '[$0D$0A]', [rfReplaceAll]), @Settings.Preset[Settings.NumListMacros].MacrosHelp[NumCurMacros].Str[0]);
 end;
 
 procedure TFormMain.MHelpEditClick(Sender: TObject);

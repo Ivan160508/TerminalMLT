@@ -4402,7 +4402,7 @@ object FormMain: TFormMain
       Top = 24
       Width = 125
       Anchors = [akTop, akLeft, akBottom]
-      Caption = 'CmdListMode'
+      Caption = 'Command List'
       TabOrder = 13
       OnClick = BtnCmdListClick
     end
