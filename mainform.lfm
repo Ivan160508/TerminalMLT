@@ -1,13 +1,13 @@
 object FormMain: TFormMain
-  Left = 283
+  Left = 322
   Height = 718
-  Top = 247
+  Top = 142
   Width = 1307
   Caption = 'FormMain'
   ClientHeight = 718
   ClientWidth = 1307
   Constraints.MinHeight = 500
-  Constraints.MinWidth = 1200
+  Constraints.MinWidth = 1300
   Menu = MainMenu
   Position = poScreenCenter
   LCLVersion = '4.8.0.0'
@@ -4365,7 +4365,7 @@ object FormMain: TFormMain
       Font.Pitch = fpFixed
       Font.Quality = fqDraft
       Font.Style = [fsBold]
-      MaxLength = 1024
+      MaxLength = 2048
       ParentFont = False
       TabOrder = 11
       Text = 'EdtCli'

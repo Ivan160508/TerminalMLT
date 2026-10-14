@@ -41,9 +41,9 @@
       <Unit>
         <Filename Value="TMB.lpr"/>
         <IsPartOfProject Value="True"/>
-        <EditorIndex Value="16"/>
+        <EditorIndex Value="5"/>
         <TopLine Value="17"/>
-        <CursorPos Y="39"/>
+        <CursorPos Y="38"/>
         <UsageCount Value="200"/>
         <Loaded Value="True"/>
       </Unit>
@@ -54,10 +54,11 @@
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="MainForm"/>
-        <CursorPos X="43" Y="9"/>
+        <TopLine Value="1066"/>
+        <CursorPos Y="1078"/>
         <UsageCount Value="200"/>
         <Bookmarks Count="1">
-          <Item0 X="42" Y="5115" Left="1" Top="5098" ID="9"/>
+          <Item0 X="42" Y="5124" Left="1" Top="5107" ID="9"/>
         </Bookmarks>
         <Loaded Value="True"/>
         <LoadedDesigner Value="True"/>
@@ -79,7 +80,7 @@
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="FormSendMode"/>
-        <EditorIndex Value="14"/>
+        <EditorIndex Value="3"/>
         <TopLine Value="59"/>
         <CursorPos X="6" Y="85"/>
         <UsageCount Value="200"/>
@@ -91,7 +92,7 @@
         <ComponentName Value="FormLogFileNew"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
-        <EditorIndex Value="13"/>
+        <EditorIndex Value="2"/>
         <TopLine Value="87"/>
         <CursorPos X="35" Y="123"/>
         <UsageCount Value="200"/>
@@ -104,7 +105,7 @@
         <ComponentName Value="FormLogSetting"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
-        <EditorIndex Value="12"/>
+        <EditorIndex Value="1"/>
         <TopLine Value="44"/>
         <CursorPos X="56" Y="62"/>
         <UsageCount Value="201"/>
@@ -118,7 +119,7 @@
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="FormSetColors"/>
-        <EditorIndex Value="18"/>
+        <EditorIndex Value="7"/>
         <TopLine Value="146"/>
         <CursorPos X="147" Y="150"/>
         <UsageCount Value="200"/>
@@ -129,7 +130,7 @@
         <Filename Value="readfile.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="ReadFile"/>
-        <EditorIndex Value="25"/>
+        <EditorIndex Value="15"/>
         <TopLine Value="130"/>
         <CursorPos X="42" Y="158"/>
         <ExtraEditorCount Value="1"/>
@@ -149,7 +150,7 @@
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="SendFileForm"/>
-        <EditorIndex Value="26"/>
+        <EditorIndex Value="16"/>
         <TopLine Value="48"/>
         <CursorPos X="20" Y="50"/>
         <UsageCount Value="200"/>
@@ -163,11 +164,10 @@
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="FormSelectPreset"/>
-        <EditorIndex Value="11"/>
+        <EditorIndex Value="-1"/>
         <TopLine Value="3"/>
         <CursorPos X="10" Y="5"/>
-        <UsageCount Value="183"/>
-        <Loaded Value="True"/>
+        <UsageCount Value="189"/>
       </Unit>
       <Unit>
         <Filename Value="formdecodecustom.pas"/>
@@ -175,12 +175,10 @@
         <ComponentName Value="FormCustomDecode"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
-        <EditorIndex Value="9"/>
+        <EditorIndex Value="-1"/>
         <TopLine Value="1126"/>
         <CursorPos X="34" Y="1128"/>
-        <UsageCount Value="132"/>
-        <Loaded Value="True"/>
-        <LoadedDesigner Value="True"/>
+        <UsageCount Value="138"/>
       </Unit>
       <Unit>
         <Filename Value="formoldcmd.pas"/>
@@ -188,11 +186,9 @@
         <ComponentName Value="Oldcmdform"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
-        <EditorIndex Value="8"/>
+        <EditorIndex Value="-1"/>
         <CursorPos X="25" Y="60"/>
-        <UsageCount Value="118"/>
-        <Loaded Value="True"/>
-        <LoadedDesigner Value="True"/>
+        <UsageCount Value="124"/>
       </Unit>
       <Unit>
         <Filename Value="formmacrosedit.pas"/>
@@ -201,20 +197,18 @@
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="FormMacrosEdit"/>
-        <EditorIndex Value="7"/>
+        <EditorIndex Value="-1"/>
         <TopLine Value="21"/>
         <CursorPos Y="44"/>
-        <UsageCount Value="106"/>
-        <Loaded Value="True"/>
-        <LoadedDesigner Value="True"/>
+        <UsageCount Value="112"/>
       </Unit>
       <Unit>
         <Filename Value="tmbold.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="TMBOld"/>
-        <EditorIndex Value="24"/>
+        <EditorIndex Value="14"/>
         <CursorPos X="3" Y="21"/>
-        <UsageCount Value="101"/>
+        <UsageCount Value="107"/>
         <Loaded Value="True"/>
       </Unit>
       <Unit>
@@ -224,9 +218,9 @@
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="FormAbout"/>
-        <EditorIndex Value="17"/>
+        <EditorIndex Value="6"/>
         <CursorPos X="20" Y="19"/>
-        <UsageCount Value="99"/>
+        <UsageCount Value="105"/>
         <Loaded Value="True"/>
       </Unit>
       <Unit>
@@ -234,19 +228,19 @@
         <IsPartOfProject Value="True"/>
         <EditorIndex Value="-1"/>
         <CursorPos X="10" Y="5"/>
-        <UsageCount Value="91"/>
+        <UsageCount Value="97"/>
       </Unit>
       <Unit>
         <Filename Value="tcpporserver.pas"/>
         <IsPartOfProject Value="True"/>
         <EditorIndex Value="-1"/>
         <CursorPos X="6"/>
-        <UsageCount Value="56"/>
+        <UsageCount Value="62"/>
       </Unit>
       <Unit>
         <Filename Value="comport.pas"/>
         <UnitName Value="ComPort"/>
-        <EditorIndex Value="20"/>
+        <EditorIndex Value="9"/>
         <TopLine Value="37"/>
         <CursorPos X="3" Y="54"/>
         <UsageCount Value="100"/>
@@ -256,22 +250,22 @@
         <Filename Value="tmbl_main.lfm"/>
         <HasResources Value="True"/>
         <EditorIndex Value="-1"/>
-        <UsageCount Value="3"/>
+        <UsageCount Value="2"/>
         <DefaultSyntaxHighlighter Value="LFM"/>
       </Unit>
       <Unit>
         <Filename Value="common.pas"/>
         <UnitName Value="Common"/>
         <IsVisibleTab Value="True"/>
-        <EditorIndex Value="22"/>
-        <TopLine Value="10"/>
-        <CursorPos X="47" Y="28"/>
+        <EditorIndex Value="11"/>
+        <TopLine Value="19"/>
+        <CursorPos X="51" Y="28"/>
         <UsageCount Value="102"/>
         <Loaded Value="True"/>
       </Unit>
       <Unit>
         <Filename Value="C:\lazarus\fpc\3.2.2\source\rtl\objpas\sysutils\sysstrh.inc"/>
-        <EditorIndex Value="19"/>
+        <EditorIndex Value="8"/>
         <TopLine Value="11"/>
         <CursorPos X="32" Y="28"/>
         <UsageCount Value="101"/>
@@ -282,11 +276,11 @@
         <EditorIndex Value="-1"/>
         <TopLine Value="324"/>
         <CursorPos X="5" Y="324"/>
-        <UsageCount Value="84"/>
+        <UsageCount Value="83"/>
       </Unit>
       <Unit>
         <Filename Value="C:\lazarus\fpc\3.2.2\source\rtl\objpas\classes\classesh.inc"/>
-        <EditorIndex Value="15"/>
+        <EditorIndex Value="4"/>
         <TopLine Value="1688"/>
         <CursorPos X="3" Y="1705"/>
         <UsageCount Value="100"/>
@@ -295,15 +289,14 @@
       <Unit>
         <Filename Value="C:\lazarus\lcl\graphics.pp"/>
         <UnitName Value="Graphics"/>
-        <EditorIndex Value="10"/>
+        <EditorIndex Value="-1"/>
         <TopLine Value="42"/>
         <CursorPos X="3" Y="59"/>
         <UsageCount Value="100"/>
-        <Loaded Value="True"/>
       </Unit>
       <Unit>
         <Filename Value="C:\lazarus\fpc\3.2.2\source\rtl\win\wininc\func.inc"/>
-        <EditorIndex Value="21"/>
+        <EditorIndex Value="10"/>
         <TopLine Value="166"/>
         <CursorPos X="10" Y="188"/>
         <UsageCount Value="100"/>
@@ -311,202 +304,204 @@
       </Unit>
       <Unit>
         <Filename Value="C:\lazarus\fpc\3.2.2\source\rtl\win\wininc\redef.inc"/>
-        <EditorIndex Value="3"/>
+        <EditorIndex Value="-1"/>
         <TopLine Value="4"/>
         <CursorPos X="16" Y="21"/>
-        <UsageCount Value="47"/>
-        <Loaded Value="True"/>
+        <UsageCount Value="49"/>
       </Unit>
       <Unit>
         <Filename Value="C:\lazarus\fpc\3.2.2\source\rtl\win\wininc\base.inc"/>
-        <EditorIndex Value="4"/>
+        <EditorIndex Value="-1"/>
         <TopLine Value="84"/>
         <CursorPos X="24" Y="101"/>
-        <UsageCount Value="47"/>
-        <Loaded Value="True"/>
+        <UsageCount Value="49"/>
       </Unit>
       <Unit>
         <Filename Value="C:\lazarus\fpc\3.2.2\source\rtl\win\sysosh.inc"/>
-        <EditorIndex Value="5"/>
+        <EditorIndex Value="-1"/>
         <CursorPos X="15" Y="22"/>
-        <UsageCount Value="47"/>
-        <Loaded Value="True"/>
+        <UsageCount Value="49"/>
       </Unit>
       <Unit>
         <Filename Value="C:\lazarus\fpc\3.2.2\source\rtl\inc\systemh.inc"/>
-        <EditorIndex Value="6"/>
+        <EditorIndex Value="-1"/>
         <TopLine Value="91"/>
         <CursorPos X="18" Y="108"/>
-        <UsageCount Value="47"/>
-        <Loaded Value="True"/>
+        <UsageCount Value="49"/>
       </Unit>
       <Unit>
         <Filename Value="C:\Users\Иван\AppData\Local\lazarus\onlinepackagemanager\packages\synapse40.1\blcksock.pas"/>
         <EditorIndex Value="-1"/>
         <TopLine Value="568"/>
         <CursorPos Y="588"/>
-        <UsageCount Value="8"/>
+        <UsageCount Value="7"/>
       </Unit>
       <Unit>
         <Filename Value="C:\lazarus\components\buildintf\ideexterntoolintf.pas"/>
         <UnitName Value="IDEExternToolIntf"/>
-        <EditorIndex Value="23"/>
+        <EditorIndex Value="13"/>
         <TopLine Value="1835"/>
         <CursorPos X="3" Y="1852"/>
-        <UsageCount Value="28"/>
+        <UsageCount Value="31"/>
         <Loaded Value="True"/>
       </Unit>
       <Unit>
         <Filename Value="tcpportclient.pas"/>
-        <EditorIndex Value="2"/>
+        <EditorIndex Value="-1"/>
         <TopLine Value="919"/>
         <CursorPos Y="940"/>
-        <UsageCount Value="27"/>
-        <Loaded Value="True"/>
+        <UsageCount Value="29"/>
       </Unit>
       <Unit>
         <Filename Value="tcpportserver.pas"/>
-        <EditorIndex Value="1"/>
+        <EditorIndex Value="-1"/>
         <TopLine Value="593"/>
         <CursorPos Y="619"/>
-        <UsageCount Value="27"/>
-        <Loaded Value="True"/>
+        <UsageCount Value="29"/>
       </Unit>
       <Unit>
         <Filename Value="C:\Users\Ivan\AppData\Local\lazarus\onlinepackagemanager\packages\synapse40.1\sswin32.inc"/>
         <EditorIndex Value="-1"/>
         <TopLine Value="930"/>
         <CursorPos X="3" Y="944"/>
-        <UsageCount Value="9"/>
+        <UsageCount Value="8"/>
       </Unit>
       <Unit>
         <Filename Value="C:\Users\Иван\AppData\Local\lazarus\onlinepackagemanager\packages\synapse40.1\sswin32.inc"/>
         <EditorIndex Value="-1"/>
         <TopLine Value="657"/>
         <CursorPos X="16" Y="668"/>
-        <UsageCount Value="12"/>
+        <UsageCount Value="11"/>
+      </Unit>
+      <Unit>
+        <Filename Value="C:\lazarus\fpc\3.2.2\source\rtl\objpas\sysutils\sysutilh.inc"/>
+        <EditorIndex Value="12"/>
+        <TopLine Value="92"/>
+        <CursorPos X="4" Y="104"/>
+        <UsageCount Value="13"/>
+        <Loaded Value="True"/>
       </Unit>
     </Units>
     <JumpHistory HistoryIndex="29">
       <Position>
-        <Filename Value="mainform.pas"/>
-        <Caret Line="4023" Column="70" TopLine="4004"/>
+        <Filename Value="TMB.lpr"/>
+        <Caret Line="33" TopLine="17"/>
+      </Position>
+      <Position>
+        <Filename Value="TMB.lpr"/>
+        <Caret Line="34" TopLine="17"/>
+      </Position>
+      <Position>
+        <Filename Value="TMB.lpr"/>
+        <Caret Line="35" TopLine="17"/>
+      </Position>
+      <Position>
+        <Filename Value="TMB.lpr"/>
+        <Caret Line="36" TopLine="17"/>
+      </Position>
+      <Position>
+        <Filename Value="TMB.lpr"/>
+        <Caret Line="37" TopLine="17"/>
+      </Position>
+      <Position>
+        <Filename Value="TMB.lpr"/>
+        <Caret Line="38" TopLine="17"/>
       </Position>
       <Position>
         <Filename Value="mainform.pas"/>
-        <Caret Line="4717" Column="91" TopLine="4701"/>
+        <Caret Line="5" Column="86"/>
       </Position>
       <Position>
         <Filename Value="mainform.pas"/>
-        <Caret Line="4750" Column="99" TopLine="4737"/>
+        <Caret Line="574" Column="68" TopLine="560"/>
       </Position>
       <Position>
         <Filename Value="mainform.pas"/>
-        <Caret Line="5851" Column="97" TopLine="5837"/>
+        <Caret Line="1078" Column="39" TopLine="1063"/>
       </Position>
       <Position>
         <Filename Value="mainform.pas"/>
-        <Caret Line="6521" Column="143" TopLine="6519"/>
+        <Caret Line="3186" Column="111" TopLine="3170"/>
       </Position>
       <Position>
         <Filename Value="mainform.pas"/>
-        <Caret Line="620" Column="103" TopLine="601"/>
-      </Position>
-      <Position>
-        <Filename Value="formsetcolors.pas"/>
-        <Caret Line="101" Column="136" TopLine="97"/>
-      </Position>
-      <Position>
-        <Filename Value="formsetcolors.pas"/>
-        <Caret Line="103" Column="136" TopLine="99"/>
-      </Position>
-      <Position>
-        <Filename Value="formsetcolors.pas"/>
-        <Caret Line="325" Column="50" TopLine="318"/>
-      </Position>
-      <Position>
-        <Filename Value="formsetcolors.pas"/>
-        <Caret Line="348" Column="17" TopLine="343"/>
+        <Caret Line="3191" Column="126" TopLine="3175"/>
       </Position>
       <Position>
         <Filename Value="mainform.pas"/>
-        <Caret Column="180"/>
+        <Caret Line="3193" Column="124" TopLine="3175"/>
       </Position>
       <Position>
         <Filename Value="mainform.pas"/>
-        <Caret Line="616" Column="60" TopLine="603"/>
+        <Caret Line="3532" Column="65" TopLine="3518"/>
       </Position>
       <Position>
         <Filename Value="mainform.pas"/>
-        <Caret Line="705" Column="3" TopLine="693"/>
+        <Caret Line="4099" Column="101" TopLine="4086"/>
       </Position>
       <Position>
         <Filename Value="mainform.pas"/>
-        <Caret Line="706" Column="63" TopLine="693"/>
+        <Caret Line="4697" Column="110" TopLine="4687"/>
       </Position>
       <Position>
         <Filename Value="mainform.pas"/>
-        <Caret Line="6362" Column="46" TopLine="6350"/>
-      </Position>
-      <Position>
-        <Filename Value="formsetcolors.pas"/>
-        <Caret Line="150" Column="147" TopLine="146"/>
+        <Caret Line="574" Column="91" TopLine="562"/>
       </Position>
       <Position>
         <Filename Value="mainform.pas"/>
-        <Caret Line="1446" TopLine="1435"/>
+        <Caret Line="17" Column="38"/>
       </Position>
       <Position>
         <Filename Value="mainform.pas"/>
-        <Caret Line="3492" TopLine="3480"/>
+        <Caret Line="577" Column="64" TopLine="563"/>
       </Position>
       <Position>
         <Filename Value="mainform.pas"/>
-        <Caret Line="5" Column="144"/>
+        <Caret Line="1077" Column="99" TopLine="1063"/>
       </Position>
       <Position>
         <Filename Value="mainform.pas"/>
-        <Caret Line="803" Column="41" TopLine="789"/>
+        <Caret Line="3186" Column="112" TopLine="3167"/>
       </Position>
       <Position>
         <Filename Value="mainform.pas"/>
-        <Caret Line="1106" Column="72" TopLine="1098"/>
+        <Caret Line="3193" Column="112" TopLine="3178"/>
       </Position>
       <Position>
         <Filename Value="mainform.pas"/>
-        <Caret Line="1117" Column="90" TopLine="1107"/>
+        <Caret Line="4" Column="123"/>
       </Position>
       <Position>
         <Filename Value="mainform.pas"/>
-        <Caret Line="1127" Column="98" TopLine="1116"/>
+        <Caret Line="575" Column="9" TopLine="554"/>
       </Position>
       <Position>
         <Filename Value="mainform.pas"/>
-        <Caret Line="1278" TopLine="1269"/>
+        <Caret Line="1315" Column="75" TopLine="1294"/>
       </Position>
       <Position>
         <Filename Value="mainform.pas"/>
-        <Caret Line="1280" TopLine="1269"/>
+        <Caret Column="134"/>
       </Position>
       <Position>
         <Filename Value="mainform.pas"/>
-        <Caret Line="1281" TopLine="1269"/>
+        <Caret Line="574" Column="76" TopLine="563"/>
       </Position>
       <Position>
         <Filename Value="mainform.pas"/>
-        <Caret Line="1278" TopLine="1269"/>
+        <Caret Line="1080" TopLine="1063"/>
       </Position>
       <Position>
         <Filename Value="mainform.pas"/>
-        <Caret Line="1280" TopLine="1266"/>
+        <Caret Line="1078" Column="7" TopLine="1066"/>
       </Position>
       <Position>
         <Filename Value="mainform.pas"/>
-        <Caret Line="1281" TopLine="1266"/>
+        <Caret Line="1081" Column="68" TopLine="1066"/>
       </Position>
       <Position>
         <Filename Value="mainform.pas"/>
-        <Caret Line="9" Column="43"/>
+        <Caret Line="3535" Column="15" TopLine="3515"/>
       </Position>
     </JumpHistory>
     <RunParams>
@@ -526,7 +521,7 @@
         <WatchScope Value="wpsLocal"/>
         <WatchKind Value="wpkWrite"/>
         <Source Value="mainform.pas"/>
-        <Line Value="4792"/>
+        <Line Value="4801"/>
       </Item>
     </BreakPoints>
   </Debugging>

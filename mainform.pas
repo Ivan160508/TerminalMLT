@@ -571,7 +571,7 @@ type TPreset = record
   isSkipReps         : boolean;
   isAutoScroll       : boolean;
   CondOut            : TCondOut;
-  CmdStr             : string[255];
+  CmdStr             : array[0..LEN_CMD_STR - 1] of byte;
   LastCmdList        : array[0..MAX_CNT_LAST_CMD - 1] of string[255];
   isShowPort         : boolean;
   isShowTime         : boolean;
@@ -1073,8 +1073,11 @@ end;
 
 procedure TFormMain.EdtCliChange(Sender: TObject);
 begin
-  if Length((Sender as TEdit).Text) < 255 then
-    Settings.Preset[Settings.NumListMacros].CmdStr := (Sender as TEdit).Text;
+  if Length((Sender as TEdit).Text) < LEN_CMD_STR then
+    begin
+      FillChar(Settings.Preset[Settings.NumListMacros].CmdStr, LEN_CMD_STR, $00);
+      StringToUTF8Bytes((Sender as TEdit).Text, @Settings.Preset[Settings.NumListMacros].CmdStr[0]);
+    end;
 end;
 
 Procedure ByteToByteSend;
@@ -3183,14 +3186,14 @@ begin
                 begin
                   if (Pos(Tag, StrCfg) > 0) and not isOK then
                     begin
-                      Settings.Preset[nList].CmdStr := Trim(GetTagValue(StrCfg, Tag));
+                      StringToUTF8Bytes(Trim(GetTagValue(StrCfg, Tag)), @Settings.Preset[nList].CmdStr[0]);
                       isOK               := true;
                       Exit;
                     end;
                 end
-              else if Settings.Preset[nList].CmdStr <> SDef^.Preset[nList].CmdStr then
+              else if not CompareMem(@Settings.Preset[nList].CmdStr[0], @SDef^.Preset[nList].CmdStr[0], LEN_CMD_STR) then
                 begin
-                  ItemCfg := SetStrParamCfg(0, Tag, Settings.Preset[nList].CmdStr);
+                  ItemCfg := SetStrParamCfg(0, Tag, Trim(BytesToUTF8String(TBytes(Settings.Preset[nList].CmdStr))));
                   WriteLn(ConfigFile, ItemCfg);
                 end;
   //.............................................
@@ -3528,7 +3531,8 @@ begin
       Sett^.Preset[nList].bits           := 8;
       Sett^.Preset[nList].Parity         := TParity.PNone;
       Sett^.Preset[nList].StopBits       := TStopBits.SB1;
-      Sett^.Preset[nList].CmdStr         := '';
+      //Sett^.Preset[nList].CmdStr         := '';
+      FillChar(Sett^.Preset[nList].CmdStr, LEN_CMD_STR, $00);
       Sett^.Preset[nList].FilterStr      := '';
       Sett^.Preset[nList].CondFilter     := TFilterLog.FL_NoFilter;
       Sett^.Preset[nList].hardflow       := false;
@@ -4095,7 +4099,7 @@ begin
 
   FormMain.TmrUpdStatistics.Enabled := Settings.Preset[Settings.NumListMacros].ShowHelpMode = TShowHelpMode.TShowStatPort;
 
-  FormMain.EdtCli.Text := Settings.Preset[Settings.NumListMacros].CmdStr;
+  FormMain.EdtCli.Text := BytesToUTF8String(TBytes(Settings.Preset[Settings.NumListMacros].CmdStr));
   FormMain.EdtTail.Text := Settings.Preset[Settings.NumListMacros].TailStr;
 
   SetModeOutPeriod;
@@ -4613,7 +4617,12 @@ begin
     FormMain.BtnConnect.Click;
 
   DTStart := now;
+
+  EdtCli.MaxLength := LEN_CMD_STR - 1;
+
   TmrReadPort.Enabled := true;
+
+
 end;
 
 procedure TFormMain.LBCommandsClick(Sender: TObject);
@@ -4690,7 +4699,7 @@ begin
         begin
           for i := 1 to MAX_CNT_LIST do
             begin
-              Settings.Preset[i].CmdStr         := PresetTMB[i].CmdStr;
+              //Settings.Preset[i].CmdStr         := PresetTMB[i].CmdStr;
               Settings.Preset[i].isShowCnt      := PresetTMB[i].isVisCnt;
               Settings.Preset[i].isShowDir      := PresetTMB[i].isVisDir;
               Settings.Preset[i].isShowTime     := PresetTMB[i].isVisTime;
