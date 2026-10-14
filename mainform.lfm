@@ -1,7 +1,7 @@
 object FormMain: TFormMain
-  Left = 307
+  Left = 506
   Height = 718
-  Top = 120
+  Top = 272
   Width = 1307
   Caption = 'FormMain'
   ClientHeight = 718
@@ -47,7 +47,7 @@ object FormMain: TFormMain
       BorderStyle = bsNone
       Color = 10354687
       Font.CharSet = RUSSIAN_CHARSET
-      Font.Height = -19
+      Font.Height = -16
       Font.Name = 'Consolas'
       Font.Pitch = fpFixed
       Font.Quality = fqDraft
@@ -55,7 +55,7 @@ object FormMain: TFormMain
       Lines.Strings = (
         '11111111111111111111111111111111111111111111111111111111222222'
       )
-      MaxLength = 200
+      MaxLength = 512
       ParentFont = False
       ReadOnly = True
       TabOrder = 0
@@ -80,12 +80,12 @@ object FormMain: TFormMain
       BorderSpacing.Bottom = 1
       BorderStyle = bsNone
       Font.CharSet = RUSSIAN_CHARSET
-      Font.Height = -19
+      Font.Height = -16
       Font.Name = 'Consolas'
       Font.Pitch = fpFixed
       Font.Quality = fqDraft
       Font.Style = [fsBold]
-      MaxLength = 200
+      MaxLength = 512
       ParentFont = False
       TabOrder = 1
       Visible = False

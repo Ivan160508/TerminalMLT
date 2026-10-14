@@ -4826,7 +4826,7 @@ end;
 
 procedure TFormMain.MHelpEditChange(Sender: TObject);
 begin
-  if (NumCurMacros > 0) and not isModeEditMacros then
+  if (NumCurMacros > 0) and isModeEditMacros then
     StringToUTF8Bytes(StringReplace((Sender as TMemo).Text, #13#10, '[$0D$0A]', [rfReplaceAll]), @Settings.Preset[Settings.NumListMacros].MacrosHelp[NumCurMacros].Str[0]);
 end;
 

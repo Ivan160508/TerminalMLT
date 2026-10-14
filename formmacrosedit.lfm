@@ -1,12 +1,12 @@
 object FormEditMacros: TFormEditMacros
   Left = 748
-  Height = 329
+  Height = 436
   Top = 329
   Width = 517
   BorderIcons = [biSystemMenu]
   BorderStyle = bsSingle
   Caption = 'Edit macros'
-  ClientHeight = 329
+  ClientHeight = 436
   ClientWidth = 517
   Position = poMainFormCenter
   LCLVersion = '4.8.0.0'
@@ -76,15 +76,15 @@ object FormEditMacros: TFormEditMacros
     AnchorSideBottom.Control = Owner
     AnchorSideBottom.Side = asrBottom
     Left = 10
-    Height = 182
-    Top = 137
+    Height = 287
+    Top = 139
     Width = 497
     Anchors = [akTop, akLeft, akRight, akBottom]
     BorderSpacing.Left = 10
     BorderSpacing.Right = 10
     BorderSpacing.Bottom = 10
     Font.CharSet = RUSSIAN_CHARSET
-    Font.Height = -19
+    Font.Height = -16
     Font.Name = 'Consolas'
     Font.Pitch = fpFixed
     Font.Quality = fqDraft
@@ -92,7 +92,7 @@ object FormEditMacros: TFormEditMacros
     Lines.Strings = (
       'MHelp'
     )
-    MaxLength = 200
+    MaxLength = 512
     ParentFont = False
     TabOrder = 2
     OnChange = MHelpChange
