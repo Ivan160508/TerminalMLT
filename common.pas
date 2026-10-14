@@ -25,7 +25,7 @@ Const
 
     TIMEOUT_HELP          = 10;
 
-    VERSION_MLT          = 'TerminalMLT v1.039 (14.10.2026)';
+    VERSION_MLT          = 'TerminalMLT v1.040 (14.10.2026)';
     EMAIL_T              = 'Ivan160508@yandex.ru';
     DONAT_MLT            = 'MIR: 2200 0117 9913 3484 GazPromBank';
 

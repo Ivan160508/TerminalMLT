@@ -5,7 +5,7 @@ unit FormMacrosEdit;
 interface
 
 uses
-  Classes, SysUtils, Forms, Controls, Graphics, Dialogs, StdCtrls;
+  Classes, SysUtils, Forms, Controls, Graphics, Dialogs, StdCtrls, common;
 
 type
 
@@ -21,6 +21,7 @@ type
     procedure EdtLineCmdChange(Sender: TObject);
     procedure EdtNameCmdChange(Sender: TObject);
     procedure FormActivate(Sender: TObject);
+    procedure FormCreate(Sender: TObject);
     procedure MHelpChange(Sender: TObject);
   private
 
@@ -44,6 +45,13 @@ begin
   EdtNameCmd.Text := CmdName;
   EdtLineCmd.Text := CmdLine;
   MHelp.Text      := StringReplace(CmdHelp, '[$0D$0A]', #13#10, [rfReplaceAll]);
+end;
+
+procedure TFormEditMacros.FormCreate(Sender: TObject);
+begin
+  EdtLineCmd.MaxLength:= LEN_MACROS_STR shr 1;
+  EdtNameCmd.MaxLength:= LEN_MACROS_STR shr 1;
+
 end;
 
 procedure TFormEditMacros.MHelpChange(Sender: TObject);

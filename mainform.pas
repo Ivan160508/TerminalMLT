@@ -4585,7 +4585,7 @@ begin
 
       EdtMacros[i].Tag := i;
       BtnMacros[i].Tag := i;
-
+      EdtMacros[i].MaxLength := LEN_MACROS_STR shr 1;
       EdtMacros[i].OnChange    := @FormMain.EdtMacrosChange;
       EdtMacros[i].OnClick     := @FormMain.EdtMacrosClick;
       BtnMacros[i].OnMouseMove := @FormMain.BtnMacrosMouseMove;

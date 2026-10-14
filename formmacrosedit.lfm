@@ -11,6 +11,7 @@ object FormEditMacros: TFormEditMacros
   Position = poMainFormCenter
   LCLVersion = '4.8.0.0'
   OnActivate = FormActivate
+  OnCreate = FormCreate
   object Label1: TLabel
     Left = 10
     Height = 15

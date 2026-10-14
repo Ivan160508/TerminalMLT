@@ -1,7 +1,7 @@
 object FormMain: TFormMain
-  Left = 506
+  Left = 490
   Height = 718
-  Top = 272
+  Top = 97
   Width = 1307
   Caption = 'FormMain'
   ClientHeight = 718
@@ -3292,7 +3292,7 @@ object FormMain: TFormMain
         Font.Pitch = fpFixed
         Font.Quality = fqDraft
         Font.Style = [fsBold]
-        MaxLength = 254
+        MaxLength = 127
         ParentFont = False
         TabOrder = 2
         Text = 'EdtSubString'
