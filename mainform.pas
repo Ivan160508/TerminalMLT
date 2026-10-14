@@ -571,8 +571,8 @@ type TPreset = record
   isSkipReps         : boolean;
   isAutoScroll       : boolean;
   CondOut            : TCondOut;
-  CmdStr             : array[0..LEN_CMD_STR - 1] of byte;
-  LastCmdList        : array[0..MAX_CNT_LAST_CMD - 1] of string[255];
+  CmdStr             : TCmdStr;
+  LastCmdList        : array[0..MAX_CNT_LAST_CMD - 1] of TCmdStr;
   isShowPort         : boolean;
   isShowTime         : boolean;
   isShowCnt          : boolean;
@@ -1075,8 +1075,8 @@ procedure TFormMain.EdtCliChange(Sender: TObject);
 begin
   if Length((Sender as TEdit).Text) < LEN_CMD_STR then
     begin
-      FillChar(Settings.Preset[Settings.NumListMacros].CmdStr, LEN_CMD_STR, $00);
-      StringToUTF8Bytes((Sender as TEdit).Text, @Settings.Preset[Settings.NumListMacros].CmdStr[0]);
+      FillChar(Settings.Preset[Settings.NumListMacros].CmdStr.Str, LEN_CMD_STR, $00);
+      StringToUTF8Bytes((Sender as TEdit).Text, @Settings.Preset[Settings.NumListMacros].CmdStr.Str[0]);
     end;
 end;
 
@@ -1314,7 +1314,7 @@ begin
 
       while i < mi do
         begin
-          if LastCmd = Settings.Preset[Settings.NumListMacros].LastCmdList[i] then
+          if CompareMem(@LastCmd[1], @Settings.Preset[Settings.NumListMacros].LastCmdList[i].Str[0], Length(LastCmd)) and (Settings.Preset[Settings.NumListMacros].LastCmdList[i].Str[Length(LastCmd)] = $00) then
             mi := i
           else
             inc(i);
@@ -1326,7 +1326,9 @@ begin
           Settings.Preset[Settings.NumListMacros].LastCmdList[i] := Settings.Preset[Settings.NumListMacros].LastCmdList[i-1];
           dec(i);
         end;
-      Settings.Preset[Settings.NumListMacros].LastCmdList[i] := LastCmd;
+      FillChar(Settings.Preset[Settings.NumListMacros].LastCmdList[i].Str[0], LEN_CMD_STR, $00);
+
+      StringToUTF8Bytes(LastCmd, @Settings.Preset[Settings.NumListMacros].LastCmdList[i].Str[0]);
     end;
 end;
 
@@ -1336,6 +1338,7 @@ var
   i : integer;
   cnt : integer;
   isEnSend : boolean;
+  strtmp : string;
 begin
   isEnSend := false;
   if (Key = 13) and (Settings.Preset[Settings.NumListMacros].OutMode <> TOutMode.TOutPeriod) then
@@ -1372,18 +1375,21 @@ begin
 
       cnt := 0;
       for i := 0 to MAX_CNT_LAST_CMD - 1 do
-        if ((Settings.Preset[Settings.NumListMacros].LastCmdList[i] <> '') and (((Sender as TEdit).Text = '') or (Pos((Sender as TEdit).Text, Settings.Preset[Settings.NumListMacros].LastCmdList[i]) = 1))) then
-          begin
-            Oldcmdform.LBOldCmd.Items.Add(Settings.Preset[Settings.NumListMacros].LastCmdList[i]);
-            inc(Cnt);
-          end;
+        begin
+          strtmp := BytesToUTF8String(TBytes(Settings.Preset[Settings.NumListMacros].LastCmdList[i].Str));
+          if ((strtmp <> '') and (((Sender as TEdit).Text = '') or (Pos((Sender as TEdit).Text, strtmp) = 1))) then
+            begin
+              Oldcmdform.LBOldCmd.Items.Add(strtmp);
+              inc(Cnt);
+            end;
+        end;
       if cnt > 0 then
         begin
           Oldcmdform.ShowModal;
           if Oldcmdform.isClear then
             begin
               for i := 0 to MAX_CNT_LAST_CMD - 1 do
-                Settings.Preset[Settings.NumListMacros].LastCmdList[i] := '';
+                FillChar(Settings.Preset[Settings.NumListMacros].LastCmdList[i].Str, LEN_CMD_STR, $00);
             end;
           (Sender as TEdit).Text := Oldcmdform.select;
         end;
@@ -2887,14 +2893,15 @@ begin
             begin
               if (Pos(Tag, StrCfg) > 0) and not isOK then
                 begin
-                  Settings.Preset[nList].LastCmdList[i] := Trim(GetTagValue(StrCfg, Tag));
+                  FillChar(Settings.Preset[nList].LastCmdList[i].Str, LEN_CMD_STR, $00);
+                  StringToUTF8Bytes(Trim(GetTagValue(StrCfg, Tag)), @Settings.Preset[nList].LastCmdList[i].Str[0]);
                   isOK := true;
                   Exit;
                 end;
             end
-          else if Settings.Preset[nList].LastCmdList[i] <> SDef^.Preset[nList].LastCmdList[i] then
+          else if not CompareMem(@Settings.Preset[nList].LastCmdList[i].Str[0], @SDef^.Preset[nList].LastCmdList[i].Str[0], LEN_CMD_STR) then
             begin
-              ItemCfg := SetStrParamCfg(0, Tag, Settings.Preset[nList].LastCmdList[i]);
+              ItemCfg := SetStrParamCfg(0, Tag, Trim(BytesToUTF8String(TBytes(Settings.Preset[nList].LastCmdList[i].Str))));
               WriteLn(ConfigFile, ItemCfg);
             end;
         end;
@@ -3186,14 +3193,14 @@ begin
                 begin
                   if (Pos(Tag, StrCfg) > 0) and not isOK then
                     begin
-                      StringToUTF8Bytes(Trim(GetTagValue(StrCfg, Tag)), @Settings.Preset[nList].CmdStr[0]);
+                      StringToUTF8Bytes(Trim(GetTagValue(StrCfg, Tag)), @Settings.Preset[nList].CmdStr.Str[0]);
                       isOK               := true;
                       Exit;
                     end;
                 end
-              else if not CompareMem(@Settings.Preset[nList].CmdStr[0], @SDef^.Preset[nList].CmdStr[0], LEN_CMD_STR) then
+              else if not CompareMem(@Settings.Preset[nList].CmdStr.Str[0], @SDef^.Preset[nList].CmdStr.Str[0], LEN_CMD_STR) then
                 begin
-                  ItemCfg := SetStrParamCfg(0, Tag, Trim(BytesToUTF8String(TBytes(Settings.Preset[nList].CmdStr))));
+                  ItemCfg := SetStrParamCfg(0, Tag, Trim(BytesToUTF8String(TBytes(Settings.Preset[nList].CmdStr.Str))));
                   WriteLn(ConfigFile, ItemCfg);
                 end;
   //.............................................
@@ -3532,7 +3539,7 @@ begin
       Sett^.Preset[nList].Parity         := TParity.PNone;
       Sett^.Preset[nList].StopBits       := TStopBits.SB1;
       //Sett^.Preset[nList].CmdStr         := '';
-      FillChar(Sett^.Preset[nList].CmdStr, LEN_CMD_STR, $00);
+      FillChar(Sett^.Preset[nList].CmdStr.Str, LEN_CMD_STR, $00);
       Sett^.Preset[nList].FilterStr      := '';
       Sett^.Preset[nList].CondFilter     := TFilterLog.FL_NoFilter;
       Sett^.Preset[nList].hardflow       := false;
@@ -3554,7 +3561,9 @@ begin
       Sett^.Preset[nList].isSkipReps      := false;
       Sett^.Preset[nList].isInsertEmptLine:= false;
       for i := 0 to MAX_CNT_LAST_CMD - 1 do
-        Sett^.Preset[nList].LastCmdList[i] := '';
+        FillChar(Sett^.Preset[nList].LastCmdList[i].Str, LEN_CMD_STR, $00);
+
+      //Sett^.Preset[nList].LastCmdList[i] := '';
 
       for j := 1 to CNT_MACROS do
         begin
@@ -4099,7 +4108,7 @@ begin
 
   FormMain.TmrUpdStatistics.Enabled := Settings.Preset[Settings.NumListMacros].ShowHelpMode = TShowHelpMode.TShowStatPort;
 
-  FormMain.EdtCli.Text := BytesToUTF8String(TBytes(Settings.Preset[Settings.NumListMacros].CmdStr));
+  FormMain.EdtCli.Text := BytesToUTF8String(TBytes(Settings.Preset[Settings.NumListMacros].CmdStr.Str));
   FormMain.EdtTail.Text := Settings.Preset[Settings.NumListMacros].TailStr;
 
   SetModeOutPeriod;

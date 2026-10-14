@@ -25,7 +25,7 @@ Const
 
     TIMEOUT_HELP          = 10;
 
-    VERSION_MLT          = 'TerminalMLT v1.036 (12.10.2026)';
+    VERSION_MLT          = 'TerminalMLT v1.037 (12.10.2026)';
     EMAIL_T              = 'Ivan160508@yandex.ru';
     DONAT_MLT            = 'MIR: 2200 0117 9913 3484 GazPromBank';
 
@@ -89,6 +89,10 @@ const ByteToAsciiTabl : array[0..255] of string=('[$00]','[$01]','[$02]','[$03]'
 
 type TItemDecodeCustom = record
   StrDecode : string[10];
+end;
+
+type TCmdStr = record
+  Str             : array[0..LEN_CMD_STR - 1] of byte;
 end;
 
 type
