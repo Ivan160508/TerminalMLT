@@ -319,7 +319,7 @@ type
     MLogBin: TMenuItem;
     MLogNewTxt: TMenuItem;
     OpenFileDialog: TOpenDialog;
-    Panel1: TPanel;
+    PanelSend: TPanel;
     PnlBtSend: TPanel;
     PnlStatistics: TPanel;
     RBTcpC: TRadioButton;
@@ -330,9 +330,6 @@ type
     SaveCfgDialog: TSaveDialog;
     StReadUTF8: TStaticText;
     STWorkTime: TStaticText;
-    STSendAscii: TStaticText;
-    STSendDec: TStaticText;
-    STSendHex: TStaticText;
     STTextLog: TStaticText;
     STBinLog: TStaticText;
     ST_NoDataReadMS: TStaticText;
@@ -490,6 +487,7 @@ type
     procedure MPreSetSaveAsClick(Sender: TObject);
     procedure MPreSetSaveClick(Sender: TObject);
     procedure MSelPresetsClick(Sender: TObject);
+    procedure PanelSendClick(Sender: TObject);
     procedure PnlLineSepClick(Sender: TObject);
     procedure Panel2Click(Sender: TObject);
     procedure PnlLogStatResize(Sender: TObject);
@@ -516,9 +514,6 @@ type
     procedure STReadDecClick(Sender: TObject);
     procedure STReadHexClick(Sender: TObject);
     procedure StReadUTF8Click(Sender: TObject);
-    procedure STSendAsciiClick(Sender: TObject);
-    procedure STSendDecClick(Sender: TObject);
-    procedure STSendHexClick(Sender: TObject);
     procedure STTextLogDblClick(Sender: TObject);
     procedure ST_EmptyLineClick(Sender: TObject);
     procedure TimerClrHelpTimer(Sender: TObject);
@@ -4065,21 +4060,27 @@ begin
     end;
 
 
-  FormMain.STSendAscii.Color := FormMain.Color;
-  FormMain.STSendHex.Color   := FormMain.Color;
-  FormMain.STSendDec.Color   := FormMain.Color;
+  FormMain.PanelSend.Color := FormMain.Color;
 
-  FormMain.STSendAscii.Font.Color := InvertColor(FormMain.Color);
-  FormMain.STSendHex.Font.Color   := InvertColor(FormMain.Color);
-  FormMain.STSendDec.Font.Color   := InvertColor(FormMain.Color);
-
+  FormMain.PanelSend.Font.Color := InvertColor(FormMain.Color);
 
   if Settings.Preset[Settings.NumListMacros].DecodeMode = TDecodeMode.TDAscii then
-    FormMain.STSendAscii.Color := Settings.Preset[Settings.NumListMacros].ColorFont_Send
+    begin
+      FormMain.PanelSend.Color  := Settings.Preset[Settings.NumListMacros].ColorFont_Send;
+      FormMain.PanelSend.Caption:= 'ASCII';
+    end
   else if Settings.Preset[Settings.NumListMacros].DecodeMode = TDecodeMode.TDHex then
-    FormMain.STSendHex.Color := Settings.Preset[Settings.NumListMacros].ColorFont_Send
+    begin
+      FormMain.PanelSend.Color := Settings.Preset[Settings.NumListMacros].ColorFont_Send;
+      FormMain.PanelSend.Caption:= 'HEX';
+    end
   else if Settings.Preset[Settings.NumListMacros].DecodeMode = TDecodeMode.TDDec then
-    FormMain.STSendDec.Color := Settings.Preset[Settings.NumListMacros].ColorFont_Send;
+    begin
+      FormMain.PanelSend.Color := Settings.Preset[Settings.NumListMacros].ColorFont_Send;
+      FormMain.PanelSend.Caption:= 'DEC';
+    end;
+  FormMain.PanelSend.Font.Color := InvertColor(FormMain.PanelSend.Color);
+
 end;
 
 procedure UpdateGUI;
@@ -4594,9 +4595,6 @@ begin
       EdtMacros[i].OnDblClick  := @EdtMacrosDblClick;
     end;
 
-  MakeRounded(STSendAscii);
-  MakeRounded(STSendDec);
-  MakeRounded(STSendHex);
   ModeMacros := MM_Name;
   ThrReadFile := nil;
 
@@ -5719,6 +5717,22 @@ begin
   OpenListPresets;
 end;
 
+procedure TFormMain.PanelSendClick(Sender: TObject);
+begin
+  if Settings.Preset[Settings.NumListMacros].DecodeMode = TDecodeMode.TDAscii then
+    Settings.Preset[Settings.NumListMacros].DecodeMode := TDecodeMode.TDHex
+  else if Settings.Preset[Settings.NumListMacros].DecodeMode = TDecodeMode.TDHex then
+    Settings.Preset[Settings.NumListMacros].DecodeMode := TDecodeMode.TDDec
+  else if Settings.Preset[Settings.NumListMacros].DecodeMode = TDecodeMode.TDDec then
+    Settings.Preset[Settings.NumListMacros].DecodeMode := TDecodeMode.TDAscii;
+
+  case Settings.Preset[Settings.NumListMacros].DecodeMode of
+    TDecodeMode.TDHex : PanelSend.Caption := 'HEX';
+    TDecodeMode.TDDec : PanelSend.Caption := 'DEC';
+    TDecodeMode.TDAscii : PanelSend.Caption := 'ASCII';
+  end;
+end;
+
 procedure TFormMain.PnlLineSepClick(Sender: TObject);
 begin
 
@@ -5959,48 +5973,6 @@ begin
   (Sender as TStaticText).Font.Color := InvertColor((Sender as TStaticText).Color);
 end;
 
-procedure TFormMain.STSendAsciiClick(Sender: TObject);
-begin
-  Settings.Preset[Settings.NumListMacros].DecodeMode := TDecodeMode.TDAscii;
-  (Sender as TStaticText).Color := Settings.Preset[Settings.NumListMacros].ColorFont_Send;
-  (Sender as TStaticText).Font.Color := InvertColor(Settings.Preset[Settings.NumListMacros].ColorFont_Send);
-  //STSendAscii.Color := FormMain.Color;
-  STSendHex.Color := FormMain.Color;
-  STSendHex.Font.Color := InvertColor(FormMain.Color);
-
-  STSendDec.Color := FormMain.Color;
-  STSendDec.Font.Color := InvertColor(FormMain.Color);
-
-end;
-
-procedure TFormMain.STSendDecClick(Sender: TObject);
-begin
-  Settings.Preset[Settings.NumListMacros].DecodeMode := TDecodeMode.TDDec;
-  (Sender as TStaticText).Color := Settings.Preset[Settings.NumListMacros].ColorFont_Send;
-  (Sender as TStaticText).Font.Color := InvertColor(Settings.Preset[Settings.NumListMacros].ColorFont_Send);
-
-  STSendAscii.Color := FormMain.Color;
-  STSendAscii.Font.Color := InvertColor(FormMain.Color);
-
-  STSendHex.Color := FormMain.Color;
-  STSendHex.Font.Color := InvertColor(FormMain.Color);
-
-  //STSendDec.Color := FormMain.Color;
-end;
-
-procedure TFormMain.STSendHexClick(Sender: TObject);
-begin
-  Settings.Preset[Settings.NumListMacros].DecodeMode := TDecodeMode.TDHex;
-  (Sender as TStaticText).Color := Settings.Preset[Settings.NumListMacros].ColorFont_Send;
-  (Sender as TStaticText).Font.Color := InvertColor(Settings.Preset[Settings.NumListMacros].ColorFont_Send);
-
-  STSendAscii.Color := FormMain.Color;
-  STSendAscii.Font.Color := InvertColor(FormMain.Color);
-
-  //STSendHex.Color := FormMain.Color;
-  STSendDec.Color := FormMain.Color;
-  STSendDec.Font.Color := InvertColor(FormMain.Color);
-end;
 
 procedure TFormMain.STTextLogDblClick(Sender: TObject);
 begin
