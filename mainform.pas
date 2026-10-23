@@ -329,6 +329,7 @@ type
     RBTcpS: TRadioButton;
     SaveCfgDialog: TSaveDialog;
     StReadUTF8: TStaticText;
+    StReadLOG: TStaticText;
     STWorkTime: TStaticText;
     STTextLog: TStaticText;
     STBinLog: TStaticText;
@@ -495,6 +496,7 @@ type
     procedure PnlMacrosResize(Sender: TObject);
     procedure RBComChange(Sender: TObject);
     procedure RBComClick(Sender: TObject);
+    procedure RBHelpChange(Sender: TObject);
     procedure RBHelpClick(Sender: TObject);
     procedure RBStatClick(Sender: TObject);
     procedure RBTcpCClick(Sender: TObject);
@@ -513,6 +515,10 @@ type
     procedure StReadCustomDblClick(Sender: TObject);
     procedure STReadDecClick(Sender: TObject);
     procedure STReadHexClick(Sender: TObject);
+    procedure StReadLOGClick(Sender: TObject);
+    procedure StReadLOGMouseLeave(Sender: TObject);
+    procedure StReadLOGMouseMove(Sender: TObject; Shift: TShiftState; X,
+      Y: Integer);
     procedure StReadUTF8Click(Sender: TObject);
     procedure STTextLogDblClick(Sender: TObject);
     procedure ST_EmptyLineClick(Sender: TObject);
@@ -698,6 +704,8 @@ var
   StrOutDec        : string;
   StrOutCustom     : string;
   StrOutUTF        : string;
+  StrOutLOG        : string;
+
   StrAddInfo       : string;
   StrAddTmp        : string;
   StrLogOld        : string;
@@ -741,6 +749,9 @@ var
   TRP_isSubStrHex    : boolean;
   TRP_isSubStrDec    : boolean;
   TRP_isSubStrCustom : boolean;
+  TRP_isSubStrUTF    : boolean;
+  TRP_isSubStrLOG    : boolean;
+
   TRP_isOutInLog     : boolean;
   TRP_isOutLine      : boolean;
   TRP_TimeStamp      : string;
@@ -4059,6 +4070,17 @@ begin
       FormMain.STReadUTF8.Font.Color := InvertColor(Settings.Preset[Settings.NumListMacros].ColorFont_RU);
     end;
 
+  if Settings.Preset[Settings.NumListMacros].ReadMode and byte(TReadMode.TReadLOG) = 0 then
+    begin
+      FormMain.StReadLOG.Color:= FormMain.Color;
+      FormMain.STReadLOG.Font.Color := InvertColor(FormMain.Color);
+    end
+  else
+    begin
+      FormMain.STReadLOG.Color:= clLime;
+      FormMain.STReadLOG.Font.Color := clBlack;
+    end;
+
 
   FormMain.PanelSend.Color := FormMain.Color;
 
@@ -5781,6 +5803,11 @@ begin
   Settings.Connect := TConnect.TConnCom;
 end;
 
+procedure TFormMain.RBHelpChange(Sender: TObject);
+begin
+
+end;
+
 procedure TFormMain.RBHelpClick(Sender: TObject);
 begin
   if not isModeEditMacros then
@@ -5956,6 +5983,42 @@ begin
       (Sender as TStaticText).Color := FormMain.Color;
     end;
   (Sender as TStaticText).Font.Color := InvertColor((Sender as TStaticText).Color);
+end;
+
+procedure TFormMain.StReadLOGClick(Sender: TObject);
+begin
+ if Settings.Preset[Settings.NumListMacros].ReadMode and byte(TReadMode.TReadLOG) = 0 then
+   begin
+     Settings.Preset[Settings.NumListMacros].ReadMode := Settings.Preset[Settings.NumListMacros].ReadMode + byte(TReadMode.TReadLOG);
+     (Sender as TStaticText).Color := clLime;
+     (Sender as TStaticText).Font.Color := clBlack;
+   end
+ else
+   begin
+     Settings.Preset[Settings.NumListMacros].ReadMode := Settings.Preset[Settings.NumListMacros].ReadMode - byte(TReadMode.TReadLOG);
+     (Sender as TStaticText).Color := FormMain.Color;
+     (Sender as TStaticText).Font.Color := InvertColor((Sender as TStaticText).Color);
+   end;
+end;
+
+procedure TFormMain.StReadLOGMouseLeave(Sender: TObject);
+begin
+  MHelp.Text := '';
+end;
+
+procedure TFormMain.StReadLOGMouseMove(Sender: TObject; Shift: TShiftState; X,
+  Y: Integer);
+begin
+  MHelp.Text := '$1B - start'  + #10 +
+                '$5B - '       + #10 +
+                '$30 - color ' + #10 +
+                '$31'          + #10 +
+                '$6d'          + #10 +
+                'MESSAGE'      + #10 +
+                '$1B'          + #10 +
+                '$5B'          + #10 +
+                '$30'          + #10 +
+                '$6D'          + #10;
 end;
 
 procedure TFormMain.StReadUTF8Click(Sender: TObject);
@@ -6259,12 +6322,16 @@ procedure TFormMain.TmrReadPortTimer(Sender: TObject);
 var
   isErr : boolean;
   isClosePort : boolean;
+  tmpColor    : TColor;
 begin
   TRP_i              := 0;
   TRP_isSubStrAscii  := false;
   TRP_isSubStrHex    := false;
   TRP_isSubStrDec    := false;
   TRP_isSubStrCustom := false;
+  TRP_isSubStrUTF    := false;
+  TRP_isSubStrLOG    := false;
+
   TRP_isOutInLog     := false;
   TRP_isOutLine      := false;
   TRP_TimeStamp      := '';
@@ -6373,12 +6440,16 @@ begin
               TRP_isSubStrHex    := false;
               TRP_isSubStrDec    := false;
               TRP_isSubStrCustom := false;
+              TRP_isSubStrUTF    := false;
+              TRP_isSubStrLOG    := false;
+
 
               StrOutHex    := '';
               StrOutDec    := '';
               StrOutCustom := '';
               StrOutAscii  := '';
               StrOutUTF    := '';
+              StrOutLOG    := '';
 
               StrAddInfo := '';
 
@@ -6544,16 +6615,16 @@ begin
                   StrOutUTF := ' ' + StrOutUTF;
 
                   if Settings.Preset[Settings.NumListMacros].CondFilter <> TFilterLog.FL_NoFilter then
-                    TRP_isSubStrCustom := Pos(Settings.Preset[Settings.NumListMacros].FilterStr, StrOutCustom) > 0;
+                    TRP_isSubStrUTF := Pos(Settings.Preset[Settings.NumListMacros].FilterStr, StrOutUTF) > 0;
 
                   if (Settings.Preset[Settings.NumListMacros].CondFilter = TFilterLog.FL_NoFilter)                    or
-                     ((Settings.Preset[Settings.NumListMacros].CondFilter = TFilterLog.FL_NoOut) and not TRP_isSubStrCustom) or
-                     ((Settings.Preset[Settings.NumListMacros].CondFilter = TFilterLog.FL_Out) and TRP_isSubStrCustom)       or
+                     ((Settings.Preset[Settings.NumListMacros].CondFilter = TFilterLog.FL_NoOut) and not TRP_isSubStrUTF) or
+                     ((Settings.Preset[Settings.NumListMacros].CondFilter = TFilterLog.FL_Out) and TRP_isSubStrUTF)       or
                      (Settings.Preset[Settings.NumListMacros].CondFilter = TFilterLog.FL_Capture) or
                      (Settings.Preset[Settings.NumListMacros].FilterStr = '') then
                     begin
                       if Settings.Preset[Settings.NumListMacros].FilterStr <> '' then
-                        if Pos(Settings.Preset[Settings.NumListMacros].FilterStr, StrOutCustom) > 0 then
+                        if Pos(Settings.Preset[Settings.NumListMacros].FilterStr, StrOutUTF) > 0 then
                           inc(CntMathSubstr);
                       AddLogLine(StrAddInfo + StrAddTmp + StrOutUTF, Settings.Preset[Settings.NumListMacros].ColorFont_RU, TStrInLog.TStrRx);
                       TRP_isOutLine := true;
@@ -6562,9 +6633,76 @@ begin
 
 ///
 
+///
+              if Settings.Preset[Settings.NumListMacros].ReadMode and byte(TReadMode.TReadLOG) > 0 then
+                begin
+                  StrAddTmp   := '';
+
+                  if Settings.Preset[Settings.NumListMacros].isShowMode then
+                    StrAddTmp := '[L]';
+                  if Settings.Preset[Settings.NumListMacros].isShowDir then
+                    StrAddTmp := StrAddTmp + '>';
+
+
+                  //$1B старт
+                  //$5B откр
+                  //$30 цвет
+                  //$31
+                  //$6d закрыть настройки
+                  //...........................сообщение
+                  //$1B
+                  //$5B
+                  //$30
+                  //$6D
+
+                  tmpColor := clBlack;
+                  if ResRead.Cnt > 9 then
+                    begin
+                      if (BufRead[0] = $1B) and (BufRead[1] = $5B) and (BufRead[3] = $31) and (BufRead[4] = $6d) then
+                        begin
+                          SetString(StrOutLOG, PAnsiChar(@BufRead[5]), ResRead.Cnt - 9);
+                          case BufRead[2] of
+                            $30 : tmpColor := clBlack;
+                            $31	: tmpColor := clRed;
+                            $32 : tmpColor := clGreen;
+                            $33 : tmpColor := clYellow;
+                            $34 : tmpColor := clBlue;
+                            $35 : tmpColor := clFuchSia;
+                            $36 : tmpColor := clAqua;
+                            $37 : tmpColor := clWhite;
+                          end;
+                        end;
+                    end
+                  else
+                    begin
+                      AddLogLine(GetDateTimeStr(now, Settings.Preset[Settings.NumListMacros].isDateInTimeStamp) + 'TerminalMLT: Error log message', Settings.Preset[Settings.NumListMacros].ColorFont_SM, TStrInLog.TStrEv);
+                      StrOutLOG := '';
+                    end;
+
+                  StrOutLOG := ' ' + StrOutLOG;
+
+                  if Settings.Preset[Settings.NumListMacros].CondFilter <> TFilterLog.FL_NoFilter then
+                    TRP_isSubStrLOG := Pos(Settings.Preset[Settings.NumListMacros].FilterStr, StrOutLOG) > 0;
+
+                  if (Settings.Preset[Settings.NumListMacros].CondFilter = TFilterLog.FL_NoFilter)                    or
+                     ((Settings.Preset[Settings.NumListMacros].CondFilter = TFilterLog.FL_NoOut) and not TRP_isSubStrLOG) or
+                     ((Settings.Preset[Settings.NumListMacros].CondFilter = TFilterLog.FL_Out) and TRP_isSubStrLOG)       or
+                     (Settings.Preset[Settings.NumListMacros].CondFilter = TFilterLog.FL_Capture) or
+                     (Settings.Preset[Settings.NumListMacros].FilterStr = '') then
+                    begin
+                      if Settings.Preset[Settings.NumListMacros].FilterStr <> '' then
+                        if Pos(Settings.Preset[Settings.NumListMacros].FilterStr, StrOutLOG) > 0 then
+                          inc(CntMathSubstr);
+                      AddLogLine(StrAddInfo + StrAddTmp + StrOutLOG, tmpColor, TStrInLog.TStrRx);
+                      TRP_isOutLine := true;
+                    end;
+                end;
+
+///
+
 
                 if (Settings.Preset[Settings.NumListMacros].CondFilter = TFilterLog.FL_Capture) and not isPauseLog and
-                   (TRP_isSubStrAscii or TRP_isSubStrHex or TRP_isSubStrDec or TRP_isSubStrCustom) then
+                   (TRP_isSubStrAscii or TRP_isSubStrHex or TRP_isSubStrDec or TRP_isSubStrCustom or TRP_isSubStrUTF or TRP_isSubStrLOG) then
                     begin
                      isPauseLog := PauseLog(isPauseLog);
                     end;
